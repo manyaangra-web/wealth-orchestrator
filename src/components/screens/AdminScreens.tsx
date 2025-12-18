@@ -19,14 +19,14 @@ export function CountryCatalogScreen() {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto space-y-5">
-      <div className="flex items-center gap-4">
-        <span className="text-sm font-medium text-foreground">Country:</span>
+    <div className="max-w-2xl mx-auto space-y-6 px-4">
+      <div className="card-elevated p-5 flex items-center gap-4">
+        <span className="text-sm font-semibold text-foreground">Country:</span>
         <Select value={country} onValueChange={setCountry}>
-          <SelectTrigger className="w-36 bg-white">
+          <SelectTrigger className="w-40 bg-card border-border">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="bg-white">
+          <SelectContent className="bg-card border-border">
             <SelectItem value="india">India</SelectItem>
             <SelectItem value="uae">UAE</SelectItem>
             <SelectItem value="singapore">Singapore</SelectItem>
@@ -34,17 +34,24 @@ export function CountryCatalogScreen() {
         </Select>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {products.map((p) => (
-          <div key={p.name} className="p-4 rounded-lg bg-white border border-border flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-foreground">{p.name}</p>
-              <p className="text-xs text-muted-foreground">{p.partner}</p>
+          <div key={p.name} className="card-elevated p-5 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="h-10 w-10 rounded-lg bg-navy-muted flex items-center justify-center">
+                <span className="text-navy font-bold text-xs">
+                  {p.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
+                </span>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">{p.name}</p>
+                <p className="text-xs text-gold font-medium">{p.partner}</p>
+              </div>
             </div>
-            <span className={`px-2.5 py-1 rounded text-xs font-medium ${
+            <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${
               p[country as keyof typeof p] === 'Allowed' 
-                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-                : 'bg-red-50 text-red-700 border border-red-200'
+                ? 'bg-success-muted text-success border border-success/20' 
+                : 'bg-destructive/10 text-destructive border border-destructive/20'
             }`}>
               {p[country as keyof typeof p]}
             </span>
@@ -67,18 +74,24 @@ export function EligibilityRulesScreen() {
   };
 
   return (
-    <div className="max-w-xl mx-auto space-y-5">
-      <div className="p-5 rounded-lg bg-white border border-border space-y-4">
+    <div className="max-w-xl mx-auto space-y-6 px-4">
+      <div className="card-elevated p-6 space-y-5">
         {rules.map((rule) => (
-          <div key={rule.id} className="flex items-center justify-between">
-            <span className="text-sm text-foreground">{rule.label}</span>
-            <Switch checked={rule.enabled} onCheckedChange={() => toggle(rule.id)} />
+          <div key={rule.id} className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50">
+            <span className="text-sm text-foreground font-medium">{rule.label}</span>
+            <Switch 
+              checked={rule.enabled} 
+              onCheckedChange={() => toggle(rule.id)}
+              className="data-[state=checked]:bg-gold"
+            />
           </div>
         ))}
       </div>
-      <p className="text-xs text-muted-foreground">
-        These are demo-mode rules used to illustrate country scoping.
-      </p>
+      <div className="p-4 rounded-lg bg-gold-muted/50 border border-gold/20">
+        <p className="text-xs text-gold font-medium">
+          These are demo-mode rules used to illustrate country scoping.
+        </p>
+      </div>
     </div>
   );
 }
@@ -92,11 +105,18 @@ export function PartnerProfilesScreen() {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto grid sm:grid-cols-2 gap-4">
+    <div className="max-w-3xl mx-auto grid sm:grid-cols-2 gap-5 px-4">
       {partners.map((p) => (
-        <div key={p.name} className="p-5 rounded-lg bg-white border border-border">
-          <h3 className="font-medium text-foreground">{p.name}</h3>
-          <p className="text-xs text-muted-foreground mb-4">{p.desc}</p>
+        <div key={p.name} className="card-elevated p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-navy to-navy-light flex items-center justify-center">
+              <span className="text-gold font-bold text-sm">{p.name.split(' ').map(w => w[0]).join('').slice(0, 2)}</span>
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground">{p.name}</h3>
+              <p className="text-xs text-muted-foreground">{p.desc}</p>
+            </div>
+          </div>
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: 'Assets', value: p.assets },
@@ -104,9 +124,9 @@ export function PartnerProfilesScreen() {
               { label: 'Data', value: p.data },
               { label: 'Commercial', value: p.commercial },
             ].map((item) => (
-              <div key={item.label}>
-                <span className="text-[10px] text-muted-foreground uppercase">{item.label}</span>
-                <p className="text-xs font-medium text-foreground">{item.value}</p>
+              <div key={item.label} className="p-2 rounded-lg bg-muted/30">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wide">{item.label}</span>
+                <p className="text-xs font-medium text-foreground mt-0.5">{item.value}</p>
               </div>
             ))}
           </div>
@@ -125,11 +145,18 @@ export function TemplateLibraryScreen() {
   ];
 
   return (
-    <div className="max-w-xl mx-auto space-y-3">
+    <div className="max-w-xl mx-auto space-y-4 px-4">
       {templates.map((t) => (
-        <div key={t} className="p-4 rounded-lg bg-white border border-border flex items-center justify-between">
-          <span className="text-sm text-foreground">{t}</span>
-          <Button size="sm" variant="outline">View</Button>
+        <div key={t} className="card-elevated p-5 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="h-10 w-10 rounded-lg bg-navy-muted flex items-center justify-center">
+              <span className="text-navy text-xs font-bold">DOC</span>
+            </div>
+            <span className="text-sm font-medium text-foreground">{t}</span>
+          </div>
+          <Button variant="outline" className="border-navy/20 text-navy hover:bg-navy-muted">
+            View
+          </Button>
         </div>
       ))}
     </div>
