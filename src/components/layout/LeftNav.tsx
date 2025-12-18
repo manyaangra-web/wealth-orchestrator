@@ -79,11 +79,11 @@ export function LeftNav() {
   );
 
   return (
-    <aside className="w-56 h-[calc(100vh-3.5rem-3rem)] border-r border-border bg-background overflow-y-auto">
-      <nav className="p-4 space-y-6">
-        {visibleGroups.map((group) => (
-          <div key={group.title}>
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
+    <aside className="w-52 lg:w-56 flex-shrink-0 bg-white border-r border-border overflow-y-auto">
+      <nav className="p-3 lg:p-4">
+        {visibleGroups.map((group, groupIdx) => (
+          <div key={group.title} className={groupIdx > 0 ? 'mt-6' : ''}>
+            <h3 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
               {group.title}
             </h3>
             <ul className="space-y-0.5">
@@ -92,10 +92,10 @@ export function LeftNav() {
                   <button
                     onClick={() => setCurrentScreen(item.id)}
                     className={cn(
-                      'w-full text-left px-3 py-2 text-sm rounded-md transition-colors',
+                      'w-full text-left px-2.5 py-1.5 text-sm rounded-md transition-colors',
                       currentScreen === item.id
-                        ? 'bg-primary/10 text-primary font-medium'
-                        : 'text-foreground/80 hover:bg-muted hover:text-foreground'
+                        ? 'bg-primary text-primary-foreground font-medium'
+                        : 'text-foreground hover:bg-muted'
                     )}
                   >
                     {item.label}

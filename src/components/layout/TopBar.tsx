@@ -18,18 +18,15 @@ const roleLabels: Record<UserRole, string> = {
 };
 
 const screenTitles: Record<string, string> = {
-  // Narrative
   landing: 'Landing',
   'why-multifly': 'Why Multifly',
   'how-it-works': 'How It Works',
-  // Client Portal
   'client-home': 'Client Home',
   'wealth-blueprint': 'Wealth Blueprint',
   recommendations: 'Recommendations',
   'portfolio-overview': 'Portfolio Overview',
   reports: 'Reports',
   'secure-messaging': 'Secure Messaging',
-  // RM Console
   'rm-dashboard': 'RM Dashboard',
   'client-360': 'Client 360',
   'onboarding-checklist': 'Onboarding Checklist',
@@ -39,19 +36,16 @@ const screenTitles: Record<string, string> = {
   'execution-tracker': 'Execution Tracker',
   'alerts-next-actions': 'Alerts & Next Actions',
   'quarterly-report-builder': 'Quarterly Report Builder',
-  // FA Workbench
   'fa-dashboard': 'FA Dashboard',
   'blueprint-builder': 'Blueprint Builder',
   'deal-dossiers': 'Deal Dossiers',
   'recommendation-drafts': 'Recommendation Drafts',
   'qa-checklist': 'QA Checklist',
-  // Structuring
   'structuring-summary': 'Structuring Case Summary',
   'country-checklist': 'Country Checklist',
   'document-packet': 'Document Packet',
   'signature-tracker': 'Signature Tracker',
   'execution-ticket': 'Execution Ticket',
-  // Subsidiary Admin
   'country-catalog': 'Country Catalog',
   'eligibility-rules': 'Eligibility Rules',
   'partner-profiles': 'Partner Profiles',
@@ -77,33 +71,33 @@ export function TopBar() {
   const showClientSelector = currentRole !== 'admin' && !['landing', 'why-multifly', 'how-it-works'].includes(currentScreen);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background">
-      <div className="flex items-center justify-between h-14 px-6">
+    <header className="sticky top-0 z-50 bg-white border-b border-border">
+      <div className="flex items-center justify-between h-14 px-4 lg:px-6">
         {/* Left: Logo */}
-        <div className="flex items-center gap-2">
-          <span className="font-serif text-xl font-semibold tracking-tight text-foreground">MULTIFLY</span>
+        <div className="flex items-center">
+          <span className="font-serif text-xl font-bold text-foreground tracking-tight">MULTIFLY</span>
         </div>
 
         {/* Center: Page Title */}
-        <div className="absolute left-1/2 transform -translate-x-1/2">
+        <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
           <h1 className="text-sm font-medium text-muted-foreground">
             {screenTitles[currentScreen] || currentScreen}
           </h1>
         </div>
 
-        {/* Right: Role Switcher + Demo Controls */}
-        <div className="flex items-center gap-3">
+        {/* Right: Controls */}
+        <div className="flex items-center gap-2 lg:gap-3">
           {/* Client Selector */}
           {showClientSelector && (
             <Select value={selectedClient} onValueChange={(v) => setSelectedClient(v as ClientId)}>
-              <SelectTrigger className="w-[200px] h-9 text-sm">
+              <SelectTrigger className="w-[140px] lg:w-[180px] h-8 text-xs lg:text-sm bg-white">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 {clients.map((client) => (
                   <SelectItem key={client.id} value={client.id}>
                     {client.id === 'client-a' ? 'Client A: ' : 'Client B: '}
-                    {client.name}
+                    {client.name.split(' ')[0]}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -112,10 +106,10 @@ export function TopBar() {
 
           {/* Role Switcher */}
           <Select value={currentRole} onValueChange={(v) => setCurrentRole(v as UserRole)}>
-            <SelectTrigger className="w-[160px] h-9 text-sm">
+            <SelectTrigger className="w-[120px] lg:w-[140px] h-8 text-xs lg:text-sm bg-white">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               {Object.entries(roleLabels).map(([role, label]) => (
                 <SelectItem key={role} value={role}>
                   {label}
@@ -125,15 +119,15 @@ export function TopBar() {
           </Select>
 
           {/* Demo Mode Pill */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 rounded-full border border-primary/20">
-            <div className="h-2 w-2 rounded-full bg-primary" />
-            <span className="text-xs font-medium text-primary">Demo Mode</span>
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 rounded-full border border-emerald-200">
+            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="text-xs font-medium text-emerald-700">Demo</span>
           </div>
 
           {/* Reset Demo Button */}
-          <Button variant="outline" size="sm" onClick={handleReset} className="h-9">
-            <RotateCcw className="h-4 w-4 mr-1.5" />
-            Reset Demo
+          <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs">
+            <RotateCcw className="h-3.5 w-3.5 mr-1" />
+            <span className="hidden lg:inline">Reset</span>
           </Button>
         </div>
       </div>

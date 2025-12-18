@@ -8,18 +8,18 @@ interface StatusChipProps {
   className?: string;
 }
 
-const statusConfig: Record<StatusType, { label: string; className: string }> = {
-  draft: { label: 'Draft', className: 'bg-muted text-muted-foreground' },
-  active: { label: 'Active', className: 'bg-primary/10 text-primary border-primary/20' },
-  'client-approved': { label: 'Client Approved', className: 'bg-success/10 text-success border-success/20' },
-  executing: { label: 'Executing', className: 'bg-info/10 text-info border-info/20' },
-  confirmed: { label: 'Confirmed', className: 'bg-success/10 text-success border-success/20' },
-  'not-started': { label: 'Not Started', className: 'bg-muted text-muted-foreground' },
-  'in-progress': { label: 'In Progress', className: 'bg-warning/10 text-warning border-warning/20' },
-  completed: { label: 'Completed', className: 'bg-success/10 text-success border-success/20' },
-  created: { label: 'Created', className: 'bg-muted text-muted-foreground' },
-  submitted: { label: 'Submitted', className: 'bg-info/10 text-info border-info/20' },
-  processing: { label: 'Processing', className: 'bg-warning/10 text-warning border-warning/20' },
+const statusConfig: Record<StatusType, { label: string; bg: string; text: string; border: string }> = {
+  draft: { label: 'Draft', bg: 'bg-slate-100', text: 'text-slate-600', border: 'border-slate-200' },
+  active: { label: 'Active', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  'client-approved': { label: 'Client Approved', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  executing: { label: 'Executing', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+  confirmed: { label: 'Confirmed', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  'not-started': { label: 'Not Started', bg: 'bg-slate-100', text: 'text-slate-600', border: 'border-slate-200' },
+  'in-progress': { label: 'In Progress', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+  completed: { label: 'Completed', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
+  created: { label: 'Created', bg: 'bg-slate-100', text: 'text-slate-600', border: 'border-slate-200' },
+  submitted: { label: 'Submitted', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+  processing: { label: 'Processing', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
 };
 
 export function StatusChip({ status, className }: StatusChipProps) {
@@ -28,8 +28,10 @@ export function StatusChip({ status, className }: StatusChipProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border',
-        config.className,
+        'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border',
+        config.bg,
+        config.text,
+        config.border,
         className
       )}
     >
@@ -45,9 +47,9 @@ interface ProgressBarProps {
 
 export function ProgressBar({ progress, className }: ProgressBarProps) {
   return (
-    <div className={cn('h-2 w-full bg-muted rounded-full overflow-hidden', className)}>
+    <div className={cn('h-1.5 w-full bg-slate-100 rounded-full overflow-hidden', className)}>
       <div
-        className="h-full bg-primary transition-all duration-300"
+        className="h-full bg-primary transition-all duration-300 rounded-full"
         style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
       />
     </div>
