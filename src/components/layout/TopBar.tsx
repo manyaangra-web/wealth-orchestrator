@@ -71,16 +71,16 @@ export function TopBar() {
   const showClientSelector = currentRole !== 'admin' && !['landing', 'why-multifly', 'how-it-works'].includes(currentScreen);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-border">
+    <header className="sticky top-0 z-50 header-navy">
       <div className="flex items-center justify-between h-14 px-4 lg:px-6">
         {/* Left: Logo */}
         <div className="flex items-center">
-          <span className="font-serif text-xl font-bold text-foreground tracking-tight">MULTIFLY</span>
+          <span className="font-serif text-xl font-bold text-gold tracking-tight">MULTIFLY</span>
         </div>
 
         {/* Center: Page Title */}
         <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
-          <h1 className="text-sm font-medium text-muted-foreground">
+          <h1 className="text-sm font-medium text-gold-light/80">
             {screenTitles[currentScreen] || currentScreen}
           </h1>
         </div>
@@ -90,12 +90,12 @@ export function TopBar() {
           {/* Client Selector */}
           {showClientSelector && (
             <Select value={selectedClient} onValueChange={(v) => setSelectedClient(v as ClientId)}>
-              <SelectTrigger className="w-[140px] lg:w-[180px] h-8 text-xs lg:text-sm bg-white">
+              <SelectTrigger className="w-[140px] lg:w-[180px] h-8 text-xs lg:text-sm bg-navy-light/50 border-navy-light text-gold-light hover:bg-navy-light/70">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-white">
+              <SelectContent className="bg-navy border-navy-light">
                 {clients.map((client) => (
-                  <SelectItem key={client.id} value={client.id}>
+                  <SelectItem key={client.id} value={client.id} className="text-gold-light hover:bg-navy-light focus:bg-navy-light focus:text-gold">
                     {client.id === 'client-a' ? 'Client A: ' : 'Client B: '}
                     {client.name.split(' ')[0]}
                   </SelectItem>
@@ -106,12 +106,12 @@ export function TopBar() {
 
           {/* Role Switcher */}
           <Select value={currentRole} onValueChange={(v) => setCurrentRole(v as UserRole)}>
-            <SelectTrigger className="w-[120px] lg:w-[140px] h-8 text-xs lg:text-sm bg-white">
+            <SelectTrigger className="w-[120px] lg:w-[140px] h-8 text-xs lg:text-sm bg-navy-light/50 border-navy-light text-gold-light hover:bg-navy-light/70">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-white">
+            <SelectContent className="bg-navy border-navy-light">
               {Object.entries(roleLabels).map(([role, label]) => (
-                <SelectItem key={role} value={role}>
+                <SelectItem key={role} value={role} className="text-gold-light hover:bg-navy-light focus:bg-navy-light focus:text-gold">
                   {label}
                 </SelectItem>
               ))}
@@ -119,13 +119,18 @@ export function TopBar() {
           </Select>
 
           {/* Demo Mode Pill */}
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 rounded-full border border-emerald-200">
-            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            <span className="text-xs font-medium text-emerald-700">Demo</span>
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-gold/20 rounded-full border border-gold/40">
+            <div className="h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
+            <span className="text-xs font-medium text-gold">Demo</span>
           </div>
 
           {/* Reset Demo Button */}
-          <Button variant="outline" size="sm" onClick={handleReset} className="h-8 text-xs">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleReset} 
+            className="h-8 text-xs bg-transparent border-gold/40 text-gold hover:bg-gold/20 hover:text-gold hover:border-gold/60"
+          >
             <RotateCcw className="h-3.5 w-3.5 mr-1" />
             <span className="hidden lg:inline">Reset</span>
           </Button>

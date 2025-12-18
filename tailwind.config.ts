@@ -53,11 +53,13 @@ export default {
         },
         gold: {
           DEFAULT: "hsl(var(--gold))",
+          light: "hsl(var(--gold-light))",
           muted: "hsl(var(--gold-muted))",
         },
         navy: {
-          deep: "hsl(var(--navy-deep))",
+          DEFAULT: "hsl(var(--navy))",
           light: "hsl(var(--navy-light))",
+          muted: "hsl(var(--navy-muted))",
         },
         success: {
           DEFAULT: "hsl(var(--success))",
@@ -65,13 +67,6 @@ export default {
         },
         warning: "hsl(var(--warning))",
         info: "hsl(var(--info))",
-        status: {
-          draft: "hsl(var(--status-draft))",
-          active: "hsl(var(--status-active))",
-          pending: "hsl(var(--status-pending))",
-          processing: "hsl(var(--status-processing))",
-          confirmed: "hsl(var(--status-confirmed))",
-        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

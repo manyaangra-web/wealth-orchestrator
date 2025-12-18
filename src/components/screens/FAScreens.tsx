@@ -11,31 +11,47 @@ export function FADashboardScreen() {
   const pendingRequests = faRequests.filter((r) => r.status === 'pending');
 
   return (
-    <div className="max-w-2xl mx-auto space-y-5">
-      <h2 className="font-serif text-2xl font-semibold text-foreground">FA Dashboard</h2>
+    <div className="max-w-2xl mx-auto space-y-6 px-4">
+      <div className="card-elevated p-6">
+        <div className="flex items-center gap-4">
+          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-navy to-navy-light flex items-center justify-center">
+            <span className="text-gold font-bold">FA</span>
+          </div>
+          <div>
+            <h2 className="font-serif text-2xl font-semibold text-foreground">FA Dashboard</h2>
+            <p className="text-sm text-muted-foreground">Financial Advisor Workbench</p>
+          </div>
+        </div>
+      </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
+        <h3 className="text-xs font-semibold text-gold uppercase tracking-wider">Pending Requests</h3>
         {pendingRequests.length === 0 ? (
-          <div className="p-5 rounded-lg bg-white border border-border">
+          <div className="card-premium p-8 text-center">
             <p className="text-sm text-muted-foreground">No pending requests</p>
           </div>
         ) : (
           pendingRequests.map((req) => {
             const client = clients.find((c) => c.id === req.clientId);
             return (
-              <div key={req.id} className="p-4 rounded-lg bg-white border border-border flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-foreground">{client?.name} — {req.title}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{req.type}</p>
+              <div key={req.id} className="card-elevated p-5 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-full bg-gold-muted flex items-center justify-center">
+                    <span className="text-gold font-semibold text-sm">{client?.name.charAt(0)}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{client?.name} — {req.title}</p>
+                    <p className="text-xs text-gold font-medium capitalize">{req.type}</p>
+                  </div>
                 </div>
                 <Button
-                  size="sm"
                   variant="outline"
                   onClick={() => {
                     if (req.type === 'blueprint') setCurrentScreen('blueprint-builder');
                     else if (req.type === 'recommendation') setCurrentScreen('recommendation-drafts');
                     else setCurrentScreen('deal-dossiers');
                   }}
+                  className="border-navy/20 text-navy hover:bg-navy-muted"
                 >
                   Open
                 </Button>
@@ -68,17 +84,19 @@ export function BlueprintBuilderScreen() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-5">
-      <h2 className="font-serif text-xl font-semibold text-foreground">Blueprint v1 — {client.name}</h2>
+    <div className="max-w-2xl mx-auto space-y-6 px-4">
+      <div className="card-elevated p-6">
+        <h2 className="font-serif text-2xl font-semibold text-foreground">Blueprint v1 — {client.name}</h2>
+      </div>
 
       {/* Allocation Targets */}
-      <div className="p-5 rounded-lg bg-white border border-border space-y-4">
-        <h3 className="font-medium text-foreground">Allocation Targets</h3>
+      <div className="card-premium p-6 space-y-5">
+        <h3 className="font-semibold text-foreground text-lg">Allocation Targets</h3>
         {allocations.map((alloc, idx) => (
-          <div key={idx} className="space-y-2">
+          <div key={idx} className="space-y-3">
             <div className="flex justify-between text-sm">
-              <span className="text-foreground">{alloc.name}</span>
-              <span className="font-medium text-foreground">{alloc.percentage}%</span>
+              <span className="text-foreground font-medium">{alloc.name}</span>
+              <span className="font-bold text-navy">{alloc.percentage}%</span>
             </div>
             <Slider
               value={[alloc.percentage]}
@@ -89,14 +107,15 @@ export function BlueprintBuilderScreen() {
               }}
               max={100}
               step={5}
+              className="[&_[role=slider]]:bg-gold [&_[role=slider]]:border-gold [&_.bg-primary]:bg-gradient-to-r [&_.bg-primary]:from-gold [&_.bg-primary]:to-gold-light"
             />
           </div>
         ))}
       </div>
 
       {/* Scenario Toggle */}
-      <div className="p-5 rounded-lg bg-white border border-border">
-        <h3 className="font-medium text-foreground mb-3">Scenario</h3>
+      <div className="card-elevated p-6">
+        <h3 className="font-semibold text-foreground text-lg mb-4">Scenario</h3>
         <div className="flex gap-2">
           {['Base', 'Bull', 'Bear'].map((s) => (
             <Button
@@ -104,12 +123,15 @@ export function BlueprintBuilderScreen() {
               size="sm"
               variant={scenario === s.toLowerCase() ? 'default' : 'outline'}
               onClick={() => setScenario(s.toLowerCase())}
+              className={scenario === s.toLowerCase() 
+                ? 'bg-navy text-gold hover:bg-navy-light' 
+                : 'border-border text-foreground hover:bg-muted'}
             >
               {s}
             </Button>
           ))}
         </div>
-        <p className="text-sm text-muted-foreground mt-3">
+        <p className="text-sm text-muted-foreground mt-4 p-3 rounded-lg bg-muted/30">
           {scenario === 'base' && 'Base case assumes moderate growth and stable markets.'}
           {scenario === 'bull' && 'Bull case assumes strong growth and favorable conditions.'}
           {scenario === 'bear' && 'Bear case assumes market downturns and conservative returns.'}
@@ -117,16 +139,16 @@ export function BlueprintBuilderScreen() {
       </div>
 
       {/* Milestone Notes */}
-      <div className="p-5 rounded-lg bg-white border border-border space-y-4">
-        <h3 className="font-medium text-foreground">Milestone Notes</h3>
+      <div className="card-premium p-6 space-y-5">
+        <h3 className="font-semibold text-foreground text-lg">Milestone Notes</h3>
         {['Now', '5Y', '10Y', 'Legacy'].map((period) => (
           <div key={period}>
-            <label className="text-xs text-muted-foreground">{period}</label>
+            <label className="text-xs text-gold font-semibold uppercase tracking-wide">{period}</label>
             <input
               type="text"
               value={milestoneNotes[period] || ''}
               onChange={(e) => setMilestoneNotes({ ...milestoneNotes, [period]: e.target.value })}
-              className="w-full px-3 py-2 mt-1 rounded-md border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-full px-4 py-3 mt-2 rounded-xl border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold/50 transition-all"
               placeholder={`Notes for ${period}...`}
             />
           </div>
@@ -134,18 +156,20 @@ export function BlueprintBuilderScreen() {
       </div>
 
       {/* Passive Income Target */}
-      <div className="p-5 rounded-lg bg-white border border-border">
-        <label className="font-medium text-foreground">Passive Income Target</label>
+      <div className="card-elevated p-6">
+        <label className="font-semibold text-foreground text-lg block mb-3">Passive Income Target</label>
         <input
           type="text"
           value={passiveIncome}
           onChange={(e) => setPassiveIncome(e.target.value)}
-          className="w-full px-3 py-2 mt-2 rounded-md border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="w-full px-4 py-3 rounded-xl border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold/50 transition-all"
           placeholder="e.g., USD 240K/year"
         />
       </div>
 
-      <Button onClick={handleSubmit}>Submit Blueprint Draft</Button>
+      <Button onClick={handleSubmit} className="bg-gold hover:bg-gold-light text-navy font-semibold">
+        Submit Blueprint Draft
+      </Button>
     </div>
   );
 }
@@ -192,25 +216,30 @@ export function DealDossiersScreen() {
   const selected = dossiers.find((d) => d.id === selectedDeal);
 
   return (
-    <div className="max-w-3xl mx-auto space-y-5">
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div className="max-w-3xl mx-auto space-y-6 px-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {dossiers.map((dossier) => (
           <div
             key={dossier.id}
-            className={`p-4 rounded-lg bg-white border cursor-pointer transition-colors ${
-              selectedDeal === dossier.id ? 'border-primary' : 'border-border hover:border-slate-300'
+            className={`card-elevated p-5 cursor-pointer transition-all ${
+              selectedDeal === dossier.id ? 'ring-2 ring-gold border-gold' : 'hover:border-navy/30'
             }`}
             onClick={() => setSelectedDeal(dossier.id)}
           >
-            <h3 className="font-medium text-foreground text-sm">{dossier.name}</h3>
-            <p className="text-xs text-muted-foreground">{dossier.partner}</p>
+            <h3 className="font-semibold text-foreground text-sm">{dossier.name}</h3>
+            <p className="text-xs text-gold font-medium mt-1">{dossier.partner}</p>
           </div>
         ))}
       </div>
 
       {selected && (
-        <div className="p-5 rounded-lg bg-white border border-border">
-          <h3 className="font-serif text-lg font-semibold text-foreground mb-4">{selected.name}</h3>
+        <div className="card-premium p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-serif text-xl font-semibold text-foreground">{selected.name}</h3>
+            <span className="px-3 py-1 rounded-full bg-gold-muted text-gold text-sm font-bold">
+              Rating: {selected.rating}
+            </span>
+          </div>
           <div className="grid grid-cols-2 gap-4">
             {[
               { label: 'Terms', value: selected.terms },
@@ -218,11 +247,10 @@ export function DealDossiersScreen() {
               { label: 'Liquidity', value: selected.liquidity },
               { label: 'Eligibility', value: selected.eligibility },
               { label: 'Risks', value: selected.risks },
-              { label: 'Internal Rating', value: selected.rating },
             ].map((item) => (
-              <div key={item.label}>
-                <span className="text-xs text-muted-foreground">{item.label}</span>
-                <p className="text-sm font-medium text-foreground">{item.value}</p>
+              <div key={item.label} className="p-3 rounded-lg bg-muted/30 border border-border/50">
+                <span className="text-xs text-muted-foreground uppercase tracking-wide">{item.label}</span>
+                <p className="text-sm font-medium text-foreground mt-1">{item.value}</p>
               </div>
             ))}
           </div>
@@ -245,22 +273,24 @@ export function RecommendationDraftsScreen() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-5">
-      <div className="p-5 rounded-lg bg-white border border-border">
-        <h3 className="font-serif text-lg font-semibold text-foreground mb-4">Draft Recommendation Pack</h3>
-        <div className="space-y-3">
+    <div className="max-w-2xl mx-auto space-y-6 px-4">
+      <div className="card-elevated p-6">
+        <h3 className="font-serif text-xl font-semibold text-foreground mb-5">Draft Recommendation Pack</h3>
+        <div className="space-y-4">
           {recommendations.map((rec) => (
-            <div key={rec.id} className="p-3 rounded-md bg-slate-50 border border-slate-100">
-              <div className="flex justify-between">
-                <span className="text-sm font-medium text-foreground">{rec.name}</span>
-                <span className="text-xs text-muted-foreground">{rec.amount}</span>
+            <div key={rec.id} className="p-4 rounded-xl bg-gradient-to-r from-navy-muted to-gold-muted/20 border border-navy/10">
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-sm font-semibold text-foreground">{rec.name}</span>
+                <span className="text-xs font-bold text-navy bg-navy-muted px-2 py-1 rounded">{rec.amount}</span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">{rec.rationale}</p>
+              <p className="text-xs text-muted-foreground">{rec.rationale}</p>
             </div>
           ))}
         </div>
       </div>
-      <Button onClick={handleSubmit}>Submit Recommendation Draft</Button>
+      <Button onClick={handleSubmit} className="bg-gold hover:bg-gold-light text-navy font-semibold">
+        Submit Recommendation Draft
+      </Button>
     </div>
   );
 }
@@ -279,15 +309,24 @@ export function QAChecklistScreen() {
   };
 
   const allChecked = items.every((i) => i.checked);
+  const progress = (items.filter((i) => i.checked).length / items.length) * 100;
 
   return (
-    <div className="max-w-xl mx-auto space-y-5">
-      <div className="p-5 rounded-lg bg-white border border-border">
-        <h3 className="font-serif text-lg font-semibold text-foreground mb-4">QA Checklist</h3>
-        <div className="space-y-3">
+    <div className="max-w-xl mx-auto space-y-6 px-4">
+      <div className="card-elevated p-6">
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-serif text-xl font-semibold text-foreground">QA Checklist</h3>
+          <span className="text-lg font-bold text-gold">{Math.round(progress)}%</span>
+        </div>
+        <ProgressBar progress={progress} className="mb-6" />
+        <div className="space-y-4">
           {items.map((item) => (
-            <label key={item.id} className="flex items-center gap-3 cursor-pointer">
-              <Checkbox checked={item.checked} onCheckedChange={() => toggle(item.id)} />
+            <label key={item.id} className="flex items-center gap-4 cursor-pointer p-3 rounded-lg hover:bg-muted/30 transition-colors">
+              <Checkbox 
+                checked={item.checked} 
+                onCheckedChange={() => toggle(item.id)}
+                className="border-navy data-[state=checked]:bg-gold data-[state=checked]:border-gold"
+              />
               <span className={`text-sm ${item.checked ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
                 {item.label}
               </span>
@@ -295,7 +334,11 @@ export function QAChecklistScreen() {
           ))}
         </div>
       </div>
-      <Button disabled={!allChecked} onClick={() => toast.success('QA Complete')}>
+      <Button 
+        disabled={!allChecked} 
+        onClick={() => toast.success('QA Complete')}
+        className="bg-gold hover:bg-gold-light text-navy font-semibold disabled:opacity-50"
+      >
         Mark QA Complete
       </Button>
     </div>
