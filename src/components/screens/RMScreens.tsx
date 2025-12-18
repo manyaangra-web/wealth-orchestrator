@@ -13,11 +13,11 @@ import {
 } from '@/components/ui/select';
 
 export function RMDashboardScreen() {
-  const { clients, blueprints, setCurrentScreen } = useAppStore();
+  const { clients, blueprints, setCurrentScreen, setSelectedClient } = useAppStore();
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <h2 className="font-serif text-2xl font-semibold">Welcome, Riya Kapoor</h2>
+    <div className="max-w-3xl mx-auto space-y-5">
+      <h2 className="font-serif text-2xl font-semibold text-foreground">Welcome, Riya Kapoor</h2>
 
       {/* Client List */}
       <div className="space-y-3">
@@ -26,10 +26,10 @@ export function RMDashboardScreen() {
           const isClientA = client.id === 'client-a';
           
           return (
-            <div key={client.id} className="p-4 rounded-xl border border-border bg-card flex items-center justify-between">
+            <div key={client.id} className="p-4 rounded-lg bg-white border border-border flex items-center justify-between">
               <div>
-                <div className="flex items-center gap-3">
-                  <h3 className="font-medium">{client.name}</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-medium text-foreground">{client.name}</h3>
                   <StatusChip status={blueprint?.status || 'draft'} />
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
@@ -38,7 +38,14 @@ export function RMDashboardScreen() {
                     : 'Pending: Trust sign-offs'}
                 </p>
               </div>
-              <Button size="sm" variant="outline" onClick={() => setCurrentScreen('client-360')}>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => {
+                  setSelectedClient(client.id);
+                  setCurrentScreen('client-360');
+                }}
+              >
                 View
               </Button>
             </div>
@@ -47,17 +54,18 @@ export function RMDashboardScreen() {
       </div>
 
       {/* Priority Tasks */}
-      <div className="p-6 rounded-xl border border-border bg-card">
-        <h3 className="font-serif text-lg font-semibold mb-4">Priority Tasks</h3>
+      <div className="p-5 rounded-lg bg-white border border-border">
+        <h3 className="font-serif text-lg font-semibold text-foreground mb-3">Priority Tasks</h3>
         <ul className="space-y-2">
-          <li className="flex items-center gap-3 text-sm">
-            <span className="h-2 w-2 rounded-full bg-primary" />
-            Follow up on missing documents (Client A)
-          </li>
-          <li className="flex items-center gap-3 text-sm">
-            <span className="h-2 w-2 rounded-full bg-primary" />
-            Review FA notes on PE allocation (Client B)
-          </li>
+          {[
+            'Follow up on missing documents (Client A)',
+            'Review FA notes on PE allocation (Client B)',
+          ].map((task, i) => (
+            <li key={i} className="flex items-center gap-2.5 text-sm text-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+              {task}
+            </li>
+          ))}
         </ul>
       </div>
     </div>
@@ -78,39 +86,34 @@ export function Client360Screen() {
   const tabs = ['Profile', 'Blueprint', 'Recommendations', 'Structuring', 'Activity'];
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-5">
       {/* Client Summary */}
-      <div className="p-6 rounded-xl border border-border bg-card">
-        <h2 className="font-serif text-xl font-semibold mb-4">{client.name}</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          <div>
-            <span className="text-muted-foreground">Segment</span>
-            <p className="font-medium">{client.segment}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Base</span>
-            <p className="font-medium">{client.base}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Net Worth</span>
-            <p className="font-medium">{client.netWorth}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Risk Band</span>
-            <p className="font-medium">{client.riskBand}</p>
-          </div>
+      <div className="p-5 rounded-lg bg-white border border-border">
+        <h2 className="font-serif text-xl font-semibold text-foreground mb-4">{client.name}</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Segment', value: client.segment },
+            { label: 'Base', value: client.base },
+            { label: 'Net Worth', value: client.netWorth },
+            { label: 'Risk Band', value: client.riskBand },
+          ].map((item) => (
+            <div key={item.label}>
+              <span className="text-xs text-muted-foreground">{item.label}</span>
+              <p className="text-sm font-medium text-foreground">{item.value}</p>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-border pb-2">
+      <div className="flex gap-1 p-1 bg-slate-100 rounded-lg w-fit">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab.toLowerCase())}
-            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
               activeTab === tab.toLowerCase()
-                ? 'bg-primary/10 text-primary'
+                ? 'bg-white text-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -120,78 +123,71 @@ export function Client360Screen() {
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'profile' && (
-        <div className="p-6 rounded-xl border border-border bg-card space-y-4 text-sm">
+      <div className="p-5 rounded-lg bg-white border border-border">
+        {activeTab === 'profile' && (
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <span className="text-muted-foreground">Primary Goals</span>
-              <p className="font-medium">{client.primaryGoals}</p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Liquidity Need</span>
-              <p className="font-medium">{client.liquidityNeed}</p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Time Horizon</span>
-              <p className="font-medium">{client.timeHorizon}</p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Next Review</span>
-              <p className="font-medium">{client.nextReview}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'blueprint' && (
-        <div className="p-6 rounded-xl border border-border bg-card space-y-4">
-          <div className="flex items-center justify-between">
-            <StatusChip status={blueprint.status} />
-            <Button size="sm" onClick={handleSendToClient}>Send to Client</Button>
-          </div>
-          <div className="space-y-2">
-            {blueprint.allocationTargets.map((t, i) => (
-              <div key={i} className="flex justify-between text-sm">
-                <span>{t.name}</span>
-                <span className="font-medium">{t.percentage}%</span>
+            {[
+              { label: 'Primary Goals', value: client.primaryGoals },
+              { label: 'Liquidity Need', value: client.liquidityNeed },
+              { label: 'Time Horizon', value: client.timeHorizon },
+              { label: 'Next Review', value: client.nextReview },
+            ].map((item) => (
+              <div key={item.label}>
+                <span className="text-xs text-muted-foreground">{item.label}</span>
+                <p className="text-sm font-medium text-foreground">{item.value}</p>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'recommendations' && (
-        <div className="space-y-3">
-          {recommendations.map((rec) => (
-            <div key={rec.id} className="p-4 rounded-xl border border-border bg-card flex items-center justify-between">
-              <div>
-                <p className="font-medium">{rec.name}</p>
-                <p className="text-sm text-muted-foreground">{rec.partner} • {rec.amount}</p>
-              </div>
-              <StatusChip status={rec.status} />
+        {activeTab === 'blueprint' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <StatusChip status={blueprint.status} />
+              <Button size="sm" onClick={handleSendToClient}>Send to Client</Button>
             </div>
-          ))}
-        </div>
-      )}
+            <div className="space-y-2">
+              {blueprint.allocationTargets.map((t, i) => (
+                <div key={i} className="flex justify-between text-sm">
+                  <span className="text-foreground">{t.name}</span>
+                  <span className="font-medium text-foreground">{t.percentage}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-      {activeTab === 'activity' && (
-        <div className="p-6 rounded-xl border border-border bg-card">
+        {activeTab === 'recommendations' && (
           <div className="space-y-3">
+            {recommendations.map((rec) => (
+              <div key={rec.id} className="p-3 rounded-md bg-slate-50 border border-slate-100 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-foreground">{rec.name}</p>
+                  <p className="text-xs text-muted-foreground">{rec.partner} • {rec.amount}</p>
+                </div>
+                <StatusChip status={rec.status} />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'activity' && (
+          <div className="space-y-2">
             {['Onboarding completed', 'Blueprint drafted by FA', 'Recommendation package prepared'].map((item, i) => (
-              <div key={i} className="flex items-center gap-3 text-sm">
-                <div className="h-2 w-2 rounded-full bg-primary" />
+              <div key={i} className="flex items-center gap-2.5 text-sm text-foreground">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                 {item}
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'structuring' && (
-        <div className="p-6 rounded-xl border border-border bg-card text-sm text-muted-foreground">
-          Navigate to Structuring Cases for detailed case management.
-        </div>
-      )}
+        {activeTab === 'structuring' && (
+          <p className="text-sm text-muted-foreground">
+            Navigate to Structuring Cases for detailed case management.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
@@ -203,13 +199,13 @@ export function OnboardingChecklistScreen() {
   const progress = items.length > 0 ? (completedCount / items.length) * 100 : 0;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="p-6 rounded-xl border border-border bg-card">
+    <div className="max-w-xl mx-auto">
+      <div className="p-5 rounded-lg bg-white border border-border">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-serif text-lg font-semibold">Onboarding Progress</h3>
-          <span className="text-sm font-medium">{Math.round(progress)}%</span>
+          <h3 className="font-serif text-lg font-semibold text-foreground">Onboarding Progress</h3>
+          <span className="text-sm font-medium text-foreground">{Math.round(progress)}%</span>
         </div>
-        <ProgressBar progress={progress} className="mb-6" />
+        <ProgressBar progress={progress} className="mb-5" />
 
         <div className="space-y-3">
           {items.map((item) => (
@@ -218,7 +214,7 @@ export function OnboardingChecklistScreen() {
                 checked={item.checked}
                 onCheckedChange={() => toggleOnboardingItem(item.id)}
               />
-              <span className={item.checked ? 'text-muted-foreground line-through' : ''}>
+              <span className={`text-sm ${item.checked ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
                 {item.label}
               </span>
             </label>
@@ -232,9 +228,7 @@ export function OnboardingChecklistScreen() {
 export function FACollaborationScreen() {
   const { selectedClient, faRequests, createFARequest, updateFARequestStatus, clients } = useAppStore();
   const [requestType, setRequestType] = useState<string>('blueprint');
-  const client = clients.find((c) => c.id === selectedClient);
 
-  const pendingRequests = faRequests.filter((r) => r.status === 'pending');
   const readyRequests = faRequests.filter((r) => r.status === 'ready');
 
   const handleRequest = () => {
@@ -253,16 +247,16 @@ export function FACollaborationScreen() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-5">
       {/* Requests to FA */}
-      <div className="p-6 rounded-xl border border-border bg-card">
-        <h3 className="font-serif text-lg font-semibold mb-4">Requests to FA</h3>
+      <div className="p-5 rounded-lg bg-white border border-border">
+        <h3 className="font-serif text-lg font-semibold text-foreground mb-4">Requests to FA</h3>
         <div className="flex gap-3">
           <Select value={requestType} onValueChange={setRequestType}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-44 bg-white">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               <SelectItem value="blueprint">Blueprint Draft</SelectItem>
               <SelectItem value="recommendation">Recommendation Draft</SelectItem>
               <SelectItem value="structuring">Structuring Guidance</SelectItem>
@@ -273,17 +267,17 @@ export function FACollaborationScreen() {
       </div>
 
       {/* Received from FA */}
-      <div className="p-6 rounded-xl border border-border bg-card">
-        <h3 className="font-serif text-lg font-semibold mb-4">Received from FA</h3>
+      <div className="p-5 rounded-lg bg-white border border-border">
+        <h3 className="font-serif text-lg font-semibold text-foreground mb-4">Received from FA</h3>
         {readyRequests.length === 0 ? (
           <p className="text-sm text-muted-foreground">No items ready for review</p>
         ) : (
           <div className="space-y-3">
             {readyRequests.map((req) => (
-              <div key={req.id} className="p-4 rounded-lg border border-border flex items-center justify-between">
+              <div key={req.id} className="p-3 rounded-md bg-slate-50 border border-slate-100 flex items-center justify-between">
                 <div>
-                  <p className="font-medium">{req.title}</p>
-                  <p className="text-sm text-muted-foreground">Ready for RM review</p>
+                  <p className="text-sm font-medium text-foreground">{req.title}</p>
+                  <p className="text-xs text-muted-foreground">Ready for RM review</p>
                 </div>
                 <div className="flex gap-2">
                   <Button size="sm" onClick={() => handleApprove(req.id)}>Approve</Button>
@@ -302,7 +296,7 @@ export function RecommendationsPipelineScreen() {
   const { selectedClient, getClientRecommendations, updateRecommendationStatus } = useAppStore();
   const recommendations = getClientRecommendations(selectedClient);
 
-  const columns: { status: string; label: string }[] = [
+  const columns = [
     { status: 'draft', label: 'Draft' },
     { status: 'client-approved', label: 'Client Approved' },
     { status: 'executing', label: 'Executing' },
@@ -323,29 +317,31 @@ export function RecommendationsPipelineScreen() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-4 gap-4">
+    <div className="overflow-x-auto">
+      <div className="grid grid-cols-4 gap-4 min-w-[700px]">
         {columns.map((col) => (
-          <div key={col.status} className="space-y-3">
-            <h3 className="font-semibold text-sm text-muted-foreground">{col.label}</h3>
-            {recommendations
-              .filter((r) => r.status === col.status)
-              .map((rec) => (
-                <div key={rec.id} className="p-3 rounded-lg border border-border bg-card">
-                  <p className="font-medium text-sm">{rec.name}</p>
-                  <p className="text-xs text-muted-foreground">{rec.amount}</p>
-                  {col.status !== 'confirmed' && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="mt-2 w-full text-xs"
-                      onClick={() => moveToNext(rec.id, rec.status)}
-                    >
-                      Move to next stage
-                    </Button>
-                  )}
-                </div>
-              ))}
+          <div key={col.status}>
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">{col.label}</h3>
+            <div className="space-y-2">
+              {recommendations
+                .filter((r) => r.status === col.status)
+                .map((rec) => (
+                  <div key={rec.id} className="p-3 rounded-lg bg-white border border-border">
+                    <p className="text-sm font-medium text-foreground">{rec.name}</p>
+                    <p className="text-xs text-muted-foreground">{rec.amount}</p>
+                    {col.status !== 'confirmed' && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="mt-2 w-full text-xs"
+                        onClick={() => moveToNext(rec.id, rec.status)}
+                      >
+                        Move to next
+                      </Button>
+                    )}
+                  </div>
+                ))}
+            </div>
           </div>
         ))}
       </div>
@@ -363,15 +359,15 @@ export function StructuringCasesScreen() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-4">
+    <div className="max-w-2xl mx-auto space-y-4">
       {cases.length === 0 ? (
-        <p className="text-muted-foreground">No structuring cases for this client yet.</p>
+        <p className="text-sm text-muted-foreground">No structuring cases for this client yet.</p>
       ) : (
         cases.map((sc) => (
-          <div key={sc.id} className="p-6 rounded-xl border border-border bg-card">
+          <div key={sc.id} className="p-5 rounded-lg bg-white border border-border">
             <div className="flex items-start justify-between mb-3">
               <div>
-                <h3 className="font-medium">{sc.name}</h3>
+                <h3 className="font-medium text-foreground">{sc.name}</h3>
                 <p className="text-sm text-muted-foreground">{sc.checklistTitle}</p>
               </div>
               <StatusChip status={sc.status} />
@@ -424,32 +420,32 @@ export function ExecutionTrackerScreen() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-4">
+    <div className="max-w-2xl mx-auto space-y-4">
       {tickets.map((ticket) => (
-        <div key={ticket.id} className="p-6 rounded-xl border border-border bg-card">
+        <div key={ticket.id} className="p-5 rounded-lg bg-white border border-border">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h3 className="font-medium">{ticket.name}</h3>
+              <h3 className="font-medium text-foreground">{ticket.name}</h3>
               <p className="text-sm text-muted-foreground">{ticket.partner}</p>
             </div>
             <StatusChip status={ticket.status} />
           </div>
 
           {/* Timeline */}
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-1 mb-4">
             {steps.map((step, idx) => (
               <div key={step} className="flex items-center">
                 <div
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  className={`px-2 py-1 rounded text-xs font-medium ${
                     idx <= getStepIndex(ticket.status)
                       ? 'bg-primary/10 text-primary'
-                      : 'bg-muted text-muted-foreground'
+                      : 'bg-slate-100 text-muted-foreground'
                   }`}
                 >
                   {step}
                 </div>
                 {idx < steps.length - 1 && (
-                  <div className={`w-8 h-0.5 ${idx < getStepIndex(ticket.status) ? 'bg-primary' : 'bg-muted'}`} />
+                  <div className={`w-4 h-0.5 ${idx < getStepIndex(ticket.status) ? 'bg-primary' : 'bg-slate-200'}`} />
                 )}
               </div>
             ))}
@@ -495,15 +491,15 @@ export function AlertsNextActionsScreen() {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="p-6 rounded-xl border border-border bg-card">
-        <h3 className="font-serif text-lg font-semibold mb-4">Alerts</h3>
-        <div className="space-y-3">
+    <div className="max-w-2xl mx-auto space-y-5">
+      <div className="p-5 rounded-lg bg-white border border-border">
+        <h3 className="font-serif text-lg font-semibold text-foreground mb-4">Alerts</h3>
+        <div className="space-y-2">
           {alerts.map((alert, i) => (
-            <div key={i} className="p-4 rounded-lg bg-muted/50 flex items-center justify-between">
-              <span className="text-sm">{alert.text}</span>
-              <span className={`text-xs px-2 py-1 rounded-full ${
-                alert.severity === 'Medium' ? 'bg-warning/20 text-warning' : 'bg-muted text-muted-foreground'
+            <div key={i} className="p-3 rounded-md bg-slate-50 border border-slate-100 flex items-center justify-between">
+              <span className="text-sm text-foreground">{alert.text}</span>
+              <span className={`text-xs px-2 py-0.5 rounded ${
+                alert.severity === 'Medium' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'
               }`}>
                 {alert.severity}
               </span>
@@ -512,12 +508,12 @@ export function AlertsNextActionsScreen() {
         </div>
       </div>
 
-      <div className="p-6 rounded-xl border border-border bg-card">
-        <h3 className="font-serif text-lg font-semibold mb-4">Recommended Next Actions</h3>
+      <div className="p-5 rounded-lg bg-white border border-border">
+        <h3 className="font-serif text-lg font-semibold text-foreground mb-4">Recommended Next Actions</h3>
         <ul className="space-y-2">
           {actions.map((action, i) => (
-            <li key={i} className="flex items-center gap-3 text-sm">
-              <span className="h-2 w-2 rounded-full bg-primary" />
+            <li key={i} className="flex items-center gap-2.5 text-sm text-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
               {action}
             </li>
           ))}
@@ -538,15 +534,15 @@ export function QuarterlyReportBuilderScreen() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="p-6 rounded-xl border border-border bg-card space-y-4">
+    <div className="max-w-xl mx-auto space-y-5">
+      <div className="p-5 rounded-lg bg-white border border-border space-y-4">
         <div>
-          <label className="text-sm font-medium mb-2 block">Reporting Period</label>
+          <label className="text-sm font-medium text-foreground mb-2 block">Reporting Period</label>
           <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-40 bg-white">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               <SelectItem value="q1-2026">Q1 2026</SelectItem>
               <SelectItem value="q4-2025">Q4 2025</SelectItem>
             </SelectContent>
@@ -554,11 +550,11 @@ export function QuarterlyReportBuilderScreen() {
         </div>
 
         <div>
-          <label className="text-sm font-medium mb-2 block">Key Highlights</label>
+          <label className="text-sm font-medium text-foreground mb-2 block">Key Highlights</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="w-full p-3 rounded-lg border border-border bg-background text-sm min-h-[100px]"
+            className="w-full p-3 rounded-md border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/20"
             placeholder="Enter key highlights for the report..."
           />
         </div>
@@ -567,25 +563,25 @@ export function QuarterlyReportBuilderScreen() {
       </div>
 
       {showPreview && (
-        <div className="p-6 rounded-xl border border-border bg-card">
-          <h3 className="font-serif text-xl font-semibold mb-4">Report Preview</h3>
+        <div className="p-5 rounded-lg bg-white border border-border">
+          <h3 className="font-serif text-xl font-semibold text-foreground mb-4">Report Preview</h3>
           <div className="space-y-4 text-sm">
             <p className="text-muted-foreground">
               {notes || 'This quarter showed steady progress toward blueprint objectives.'}
             </p>
             <div>
-              <h4 className="font-semibold">Progress vs Blueprint</h4>
+              <h4 className="font-semibold text-foreground">Progress vs Blueprint</h4>
               <p className="text-muted-foreground">On track with minor adjustments recommended.</p>
             </div>
             <div>
-              <h4 className="font-semibold">Key Events</h4>
+              <h4 className="font-semibold text-foreground">Key Events</h4>
               <ul className="list-disc list-inside text-muted-foreground">
                 <li>Private Credit allocation initiated</li>
                 <li>Quarterly review completed</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold">Next Actions</h4>
+              <h4 className="font-semibold text-foreground">Next Actions</h4>
               <ul className="list-disc list-inside text-muted-foreground">
                 <li>Schedule follow-up review</li>
                 <li>Review liquidity requirements</li>

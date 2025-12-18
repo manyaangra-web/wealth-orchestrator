@@ -11,22 +11,26 @@ export function StructuringSummaryScreen() {
   const currentCase = cases[0];
 
   if (!currentCase) {
-    return <p className="text-muted-foreground">No structuring cases found.</p>;
+    return (
+      <div className="max-w-2xl mx-auto">
+        <p className="text-sm text-muted-foreground">No structuring cases found.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="p-6 rounded-xl border border-border bg-card">
+    <div className="max-w-2xl mx-auto">
+      <div className="p-5 rounded-lg bg-white border border-border">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h2 className="font-serif text-xl font-semibold">{currentCase.name}</h2>
+            <h2 className="font-serif text-xl font-semibold text-foreground">{currentCase.name}</h2>
             <p className="text-sm text-muted-foreground">{currentCase.checklistTitle}</p>
           </div>
           <StatusChip status={currentCase.status} />
         </div>
 
-        <div className="p-4 rounded-lg bg-muted/50 mb-4">
-          <p className="text-sm">
+        <div className="p-3 rounded-md bg-slate-50 border border-slate-100 mb-4">
+          <p className="text-sm text-foreground">
             <span className="font-medium">Why structuring is required:</span>{' '}
             This opportunity requires cross-border onboarding, documentation, and approvals before partner execution.
           </p>
@@ -45,12 +49,16 @@ export function StructuringSummaryScreen() {
 }
 
 export function CountryChecklistScreen() {
-  const { selectedClient, getClientStructuringCases, toggleChecklistItem, updateStructuringStatus } = useAppStore();
+  const { selectedClient, getClientStructuringCases, toggleChecklistItem } = useAppStore();
   const cases = getClientStructuringCases(selectedClient);
   const currentCase = cases[0];
 
   if (!currentCase) {
-    return <p className="text-muted-foreground">No structuring cases found.</p>;
+    return (
+      <div className="max-w-xl mx-auto">
+        <p className="text-sm text-muted-foreground">No structuring cases found.</p>
+      </div>
+    );
   }
 
   const progress =
@@ -61,13 +69,13 @@ export function CountryChecklistScreen() {
   const allComplete = progress === 100;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="p-6 rounded-xl border border-border bg-card">
+    <div className="max-w-xl mx-auto space-y-5">
+      <div className="p-5 rounded-lg bg-white border border-border">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-serif text-lg font-semibold">{currentCase.checklistTitle}</h3>
-          <span className="text-sm font-medium">{Math.round(progress)}%</span>
+          <h3 className="font-serif text-lg font-semibold text-foreground">{currentCase.checklistTitle}</h3>
+          <span className="text-sm font-medium text-foreground">{Math.round(progress)}%</span>
         </div>
-        <ProgressBar progress={progress} className="mb-6" />
+        <ProgressBar progress={progress} className="mb-5" />
 
         <div className="space-y-3">
           {currentCase.checklistItems.map((item) => (
@@ -76,7 +84,7 @@ export function CountryChecklistScreen() {
                 checked={item.checked}
                 onCheckedChange={() => toggleChecklistItem(currentCase.id, item.id)}
               />
-              <span className={item.checked ? 'text-muted-foreground line-through' : ''}>
+              <span className={`text-sm ${item.checked ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
                 {item.label}
               </span>
             </label>
@@ -85,7 +93,7 @@ export function CountryChecklistScreen() {
       </div>
 
       {allComplete && (
-        <div className="p-4 rounded-lg bg-success/10 border border-success/20 text-sm text-success">
+        <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-sm text-emerald-700">
           Checklist complete. Execution ticket can now be submitted.
         </div>
       )}
@@ -109,47 +117,27 @@ export function DocumentPacketScreen() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="p-6 rounded-xl border border-border bg-card space-y-4">
-        <h3 className="font-serif text-lg font-semibold">Document Packet</h3>
+    <div className="max-w-xl mx-auto">
+      <div className="p-5 rounded-lg bg-white border border-border space-y-3">
+        <h3 className="font-serif text-lg font-semibold text-foreground mb-2">Document Packet</h3>
 
-        <div className="p-4 rounded-lg bg-muted/50 flex items-center justify-between">
-          <div>
-            <p className="font-medium">KYC Documents</p>
-            <p className="text-sm text-muted-foreground capitalize">{docs.kyc}</p>
-          </div>
-          {docs.kyc === 'pending' && (
-            <Button size="sm" variant="outline" onClick={() => upload('kyc')}>
-              Upload
-            </Button>
-          )}
-        </div>
-
-        <div className="p-4 rounded-lg bg-muted/50 flex items-center justify-between">
-          <div>
-            <p className="font-medium">Subscription Documents</p>
-            <p className="text-sm text-muted-foreground capitalize">{docs.subscription}</p>
-          </div>
-          {docs.subscription === 'pending' && (
-            <Button size="sm" variant="outline" onClick={() => upload('subscription')}>
-              Upload
-            </Button>
-          )}
-        </div>
-
-        {isClientB && (
-          <div className="p-4 rounded-lg bg-muted/50 flex items-center justify-between">
+        {[
+          { key: 'kyc' as const, label: 'KYC Documents' },
+          { key: 'subscription' as const, label: 'Subscription Documents' },
+          ...(isClientB ? [{ key: 'trust' as const, label: 'Trust/Entity Documents' }] : []),
+        ].map((item) => (
+          <div key={item.key} className="p-3 rounded-md bg-slate-50 border border-slate-100 flex items-center justify-between">
             <div>
-              <p className="font-medium">Trust/Entity Documents</p>
-              <p className="text-sm text-muted-foreground capitalize">{docs.trust}</p>
+              <p className="text-sm font-medium text-foreground">{item.label}</p>
+              <p className="text-xs text-muted-foreground capitalize">{docs[item.key]}</p>
             </div>
-            {docs.trust === 'pending' && (
-              <Button size="sm" variant="outline" onClick={() => upload('trust')}>
+            {docs[item.key] === 'pending' && (
+              <Button size="sm" variant="outline" onClick={() => upload(item.key)}>
                 Upload
               </Button>
             )}
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
@@ -171,47 +159,27 @@ export function SignatureTrackerScreen() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="p-6 rounded-xl border border-border bg-card space-y-4">
-        <h3 className="font-serif text-lg font-semibold">Signature Tracker</h3>
+    <div className="max-w-xl mx-auto">
+      <div className="p-5 rounded-lg bg-white border border-border space-y-3">
+        <h3 className="font-serif text-lg font-semibold text-foreground mb-2">Signature Tracker</h3>
 
-        <div className="p-4 rounded-lg bg-muted/50 flex items-center justify-between">
-          <div>
-            <p className="font-medium">Client signature on subscription docs</p>
-            <p className="text-sm text-muted-foreground capitalize">{signatures.subscription}</p>
-          </div>
-          {signatures.subscription === 'pending' && (
-            <Button size="sm" variant="outline" onClick={() => complete('subscription')}>
-              Mark Completed
-            </Button>
-          )}
-        </div>
-
-        <div className="p-4 rounded-lg bg-muted/50 flex items-center justify-between">
-          <div>
-            <p className="font-medium">Risk disclosure acknowledgement</p>
-            <p className="text-sm text-muted-foreground capitalize">{signatures.risk}</p>
-          </div>
-          {signatures.risk === 'pending' && (
-            <Button size="sm" variant="outline" onClick={() => complete('risk')}>
-              Mark Completed
-            </Button>
-          )}
-        </div>
-
-        {isClientB && (
-          <div className="p-4 rounded-lg bg-muted/50 flex items-center justify-between">
+        {[
+          { key: 'subscription' as const, label: 'Client signature on subscription docs' },
+          { key: 'risk' as const, label: 'Risk disclosure acknowledgement' },
+          ...(isClientB ? [{ key: 'trust' as const, label: 'Trust sign-offs' }] : []),
+        ].map((item) => (
+          <div key={item.key} className="p-3 rounded-md bg-slate-50 border border-slate-100 flex items-center justify-between">
             <div>
-              <p className="font-medium">Trust sign-offs</p>
-              <p className="text-sm text-muted-foreground capitalize">{signatures.trust}</p>
+              <p className="text-sm font-medium text-foreground">{item.label}</p>
+              <p className="text-xs text-muted-foreground capitalize">{signatures[item.key]}</p>
             </div>
-            {signatures.trust === 'pending' && (
-              <Button size="sm" variant="outline" onClick={() => complete('trust')}>
+            {signatures[item.key] === 'pending' && (
+              <Button size="sm" variant="outline" onClick={() => complete(item.key)}>
                 Mark Completed
               </Button>
             )}
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
@@ -225,7 +193,11 @@ export function ExecutionTicketScreen() {
   const structuringCase = cases[0];
 
   if (!ticket) {
-    return <p className="text-muted-foreground">No execution tickets found.</p>;
+    return (
+      <div className="max-w-xl mx-auto">
+        <p className="text-sm text-muted-foreground">No execution tickets found.</p>
+      </div>
+    );
   }
 
   const checklistComplete =
@@ -239,26 +211,26 @@ export function ExecutionTicketScreen() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="p-6 rounded-xl border border-border bg-card">
-        <h3 className="font-serif text-lg font-semibold mb-4">Execution Ticket</h3>
+    <div className="max-w-xl mx-auto">
+      <div className="p-5 rounded-lg bg-white border border-border">
+        <h3 className="font-serif text-lg font-semibold text-foreground mb-4">Execution Ticket</h3>
 
-        <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          {[
+            { label: 'Recommendation', value: ticket.name },
+            { label: 'Partner', value: ticket.partner },
+            { label: 'Packet Status', value: checklistComplete ? 'Complete' : 'Incomplete' },
+          ].map((item) => (
+            <div key={item.label}>
+              <span className="text-xs text-muted-foreground">{item.label}</span>
+              <p className="text-sm font-medium text-foreground">{item.value}</p>
+            </div>
+          ))}
           <div>
-            <span className="text-muted-foreground">Recommendation</span>
-            <p className="font-medium">{ticket.name}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Partner</span>
-            <p className="font-medium">{ticket.partner}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Packet Status</span>
-            <p className="font-medium">{checklistComplete ? 'Complete' : 'Incomplete'}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Ticket Status</span>
-            <StatusChip status={ticket.status} />
+            <span className="text-xs text-muted-foreground">Ticket Status</span>
+            <div className="mt-1">
+              <StatusChip status={ticket.status} />
+            </div>
           </div>
         </div>
 

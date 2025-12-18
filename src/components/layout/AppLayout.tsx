@@ -9,12 +9,12 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-slate-50">
       <TopBar />
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden">
         <LeftNav />
         <main className="flex-1 overflow-auto">
-          <div className="p-6">{children}</div>
+          <div className="p-4 lg:p-6 min-h-full">{children}</div>
         </main>
       </div>
       <Footer />
