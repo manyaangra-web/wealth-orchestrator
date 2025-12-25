@@ -14,7 +14,7 @@ export function LandingScreen() {
           <span className="text-xs font-medium text-gold tracking-wide uppercase">Wealth Orchestration Platform</span>
         </div>
         <h1 className="font-serif text-4xl lg:text-5xl font-semibold text-foreground mb-6 leading-tight">
-          Your global wealth, designed as one plan.
+          45345645677345
         </h1>
         <p className="text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
           MULTIFLY is a relationship-led wealth orchestration platform: one RM, a living blueprint, curated opportunities, and partner-executed investing.
