@@ -11,6 +11,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <TopBar />
+      
       <div className="flex flex-1 overflow-hidden">
         <LeftNav />
         <main className="flex-1 overflow-auto">
