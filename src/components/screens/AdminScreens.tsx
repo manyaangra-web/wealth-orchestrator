@@ -8,6 +8,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Animation variants
+const fadeInUp = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  exit: { opacity: 0, y: -30, transition: { duration: 0.3 } }
+};
+const cardHover = {
+  rest: { scale: 1 },
+  hover: { scale: 1.03, boxShadow: '0 4px 24px rgba(218,165,32,0.12)' }
+};
 
 export function CountryCatalogScreen() {
   const [country, setCountry] = useState('india');
@@ -19,9 +31,15 @@ export function CountryCatalogScreen() {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 px-4">
-      <div className="card-elevated p-5 flex items-center gap-4">
-        <span className="text-sm font-semibold text-foreground">Country:</span>
+    <motion.div
+      {...fadeInUp}
+      className="max-w-2xl mx-auto space-y-8 px-4"
+    >
+      <motion.div
+        {...fadeInUp}
+        className="card-elevated p-6 flex items-center gap-4 bg-gradient-to-br from-navy via-navy-light to-navy-muted shadow-lg"
+      >
+        <span className="text-base font-semibold text-gold">Country:</span>
         <Select value={country} onValueChange={setCountry}>
           <SelectTrigger className="w-40 bg-card border-border">
             <SelectValue />
@@ -32,33 +50,43 @@ export function CountryCatalogScreen() {
             <SelectItem value="singapore">Singapore</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </motion.div>
 
-      <div className="space-y-4">
-        {products.map((p) => (
-          <div key={p.name} className="card-elevated p-5 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="h-10 w-10 rounded-lg bg-navy-muted flex items-center justify-center">
-                <span className="text-navy font-bold text-xs">
-                  {p.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
-                </span>
+      <motion.div {...fadeInUp} className="space-y-5">
+        <AnimatePresence>
+          {products.map((p, idx) => (
+            <motion.div
+              key={p.name}
+              {...fadeInUp}
+              variants={cardHover}
+              initial="rest"
+              whileHover="hover"
+              transition={{ delay: idx * 0.05, duration: 0.4 }}
+              className="card-elevated p-5 flex items-center justify-between bg-gradient-to-r from-white to-muted border border-border shadow transition-all"
+            >
+              <div className="flex items-center gap-4">
+                <div className="h-10 w-10 rounded-lg bg-navy-muted flex items-center justify-center">
+                  <span className="text-navy font-bold text-xs">
+                    {p.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-base font-semibold text-foreground">{p.name}</p>
+                  <p className="text-xs text-gold font-medium">{p.partner}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground">{p.name}</p>
-                <p className="text-xs text-gold font-medium">{p.partner}</p>
-              </div>
-            </div>
-            <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${
-              p[country as keyof typeof p] === 'Allowed' 
-                ? 'bg-success-muted text-success border border-success/20' 
-                : 'bg-destructive/10 text-destructive border border-destructive/20'
-            }`}>
-              {p[country as keyof typeof p]}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
+              <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${
+                p[country as keyof typeof p] === 'Allowed' 
+                  ? 'bg-success-muted text-success border border-success/20' 
+                  : 'bg-destructive/10 text-destructive border border-destructive/20'
+              }`}>
+                {p[country as keyof typeof p]}
+              </span>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -74,25 +102,44 @@ export function EligibilityRulesScreen() {
   };
 
   return (
-    <div className="max-w-xl mx-auto space-y-6 px-4">
-      <div className="card-elevated p-6 space-y-5">
-        {rules.map((rule) => (
-          <div key={rule.id} className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50">
-            <span className="text-sm text-foreground font-medium">{rule.label}</span>
-            <Switch 
-              checked={rule.enabled} 
-              onCheckedChange={() => toggle(rule.id)}
-              className="data-[state=checked]:bg-gold"
-            />
-          </div>
-        ))}
-      </div>
-      <div className="p-4 rounded-lg bg-gold-muted/50 border border-gold/20">
+    <motion.div
+      {...fadeInUp}
+      className="max-w-xl mx-auto space-y-8 px-4"
+    >
+      <motion.div
+        {...fadeInUp}
+        className="card-elevated p-8 space-y-5 bg-gradient-to-br from-white via-muted to-white shadow-lg"
+      >
+        <AnimatePresence>
+          {rules.map((rule, idx) => (
+            <motion.div
+              key={rule.id}
+              {...fadeInUp}
+              variants={cardHover}
+              initial="rest"
+              whileHover="hover"
+              transition={{ delay: idx * 0.05, duration: 0.4 }}
+              className="flex items-center justify-between p-4 rounded-xl border border-border bg-gradient-to-r from-white to-muted/30 transition-all"
+            >
+              <span className="text-base text-foreground font-medium">{rule.label}</span>
+              <Switch 
+                checked={rule.enabled} 
+                onCheckedChange={() => toggle(rule.id)}
+                className="data-[state=checked]:bg-gold"
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
+      <motion.div
+        {...fadeInUp}
+        className="p-4 rounded-lg bg-gold-muted/50 border border-gold/20"
+      >
         <p className="text-xs text-gold font-medium">
           These are demo-mode rules used to illustrate country scoping.
         </p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -105,34 +152,59 @@ export function PartnerProfilesScreen() {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto grid sm:grid-cols-2 gap-5 px-4">
-      {partners.map((p) => (
-        <div key={p.name} className="card-elevated p-6">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-navy to-navy-light flex items-center justify-center">
-              <span className="text-gold font-bold text-sm">{p.name.split(' ').map(w => w[0]).join('').slice(0, 2)}</span>
+    <motion.div
+      {...fadeInUp}
+      className="max-w-3xl mx-auto grid sm:grid-cols-2 gap-8 px-4"
+    >
+      <AnimatePresence>
+        {partners.map((p, idx) => (
+          <motion.div
+            key={p.name}
+            {...fadeInUp}
+            variants={cardHover}
+            initial="rest"
+            whileHover="hover"
+            transition={{ delay: idx * 0.05, duration: 0.4 }}
+            className="card-elevated p-6 bg-gradient-to-br from-white via-muted to-white shadow-lg transition-all"
+          >
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-navy to-navy-light flex items-center justify-center">
+                <span className="text-gold font-bold text-sm">{p.name.split(' ').map(w => w[0]).join('').slice(0, 2)}</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">{p.name}</h3>
+                <p className="text-xs text-muted-foreground">{p.desc}</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-foreground">{p.name}</h3>
-              <p className="text-xs text-muted-foreground">{p.desc}</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3">
             {[
-              { label: 'Assets', value: p.assets },
-              { label: 'Jurisdictions', value: p.jurisdictions },
-              { label: 'Data', value: p.data },
-              { label: 'Commercial', value: p.commercial },
+              {
+                label: 'Assets',
+                value: p.assets
+              },
+              {
+                label: 'Jurisdictions',
+                value: p.jurisdictions
+              },
+              {
+                label: 'Data',
+                value: p.data
+              },
+              {
+                label: 'Commercial',
+                value: p.commercial
+              },
             ].map((item) => (
               <div key={item.label} className="p-2 rounded-lg bg-muted/30">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-wide">{item.label}</span>
                 <p className="text-xs font-medium text-foreground mt-0.5">{item.value}</p>
               </div>
             ))}
-          </div>
-        </div>
-      ))}
-    </div>
+            </div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -145,20 +217,33 @@ export function TemplateLibraryScreen() {
   ];
 
   return (
-    <div className="max-w-xl mx-auto space-y-4 px-4">
-      {templates.map((t) => (
-        <div key={t} className="card-elevated p-5 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="h-10 w-10 rounded-lg bg-navy-muted flex items-center justify-center">
-              <span className="text-navy text-xs font-bold">DOC</span>
+    <motion.div
+      {...fadeInUp}
+      className="max-w-xl mx-auto space-y-6 px-4"
+    >
+      <AnimatePresence>
+        {templates.map((t, idx) => (
+          <motion.div
+            key={t}
+            {...fadeInUp}
+            variants={cardHover}
+            initial="rest"
+            whileHover="hover"
+            transition={{ delay: idx * 0.05, duration: 0.4 }}
+            className="card-elevated p-5 flex items-center justify-between bg-gradient-to-r from-white to-muted border border-border shadow transition-all"
+          >
+            <div className="flex items-center gap-4">
+              <div className="h-10 w-10 rounded-lg bg-navy-muted flex items-center justify-center">
+                <span className="text-navy text-xs font-bold">DOC</span>
+              </div>
+              <span className="text-base font-medium text-foreground">{t}</span>
             </div>
-            <span className="text-sm font-medium text-foreground">{t}</span>
-          </div>
-          <Button variant="outline" className="border-navy/20 text-navy hover:bg-navy-muted">
-            View
-          </Button>
-        </div>
-      ))}
-    </div>
+            {/* <Button variant="outline" className="border-navy/20 text-navy hover:bg-navy-muted">
+              View
+            </Button> */}
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </motion.div>
   );
 }
