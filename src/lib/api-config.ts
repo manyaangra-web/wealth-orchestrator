@@ -1,5 +1,5 @@
 // src/lib/api-config.ts
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = 'http://16.171.34.205:8002/api';
 
 export const API_ENDPOINTS = {
   AUTH: {

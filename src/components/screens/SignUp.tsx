@@ -8,7 +8,7 @@ import { Eye, EyeOff, Lock, Mail, User, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // Add base URL for API
-const BASE_URL = 'http://127.0.0.1:8000';
+const BASE_URL = 'http://16.171.34.205:8002';
 
 export function SignUpScreen() {
   const [formData, setFormData] = useState({

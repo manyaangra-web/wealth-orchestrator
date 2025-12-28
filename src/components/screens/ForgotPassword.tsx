@@ -36,9 +36,9 @@ export function ForgotPasswordScreen() {
     setErrors({});
     
     try {
-      console.log('Making forgot password API request to:', 'http://127.0.0.1:8000/api/auth/forgot-password/');
+      console.log('Making forgot password API request to:', 'http://16.171.34.205:8002/api/auth/forgot-password/');
       
-      const response = await fetch('http://127.0.0.1:8000/api/auth/forgot-password/', {
+      const response = await fetch('http://16.171.34.205:8002/api/auth/forgot-password/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

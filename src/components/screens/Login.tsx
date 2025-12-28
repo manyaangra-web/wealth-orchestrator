@@ -92,9 +92,9 @@ export function LoginScreen() {
     console.log('handleLogin called with:', { email, password }); // Debug log
     
     try {
-      console.log('Making API request to:', 'http://127.0.0.1:8000/api/auth/login/'); // Debug log
+      console.log('Making API request to:', 'http://16.171.34.205:8002/api/auth/login/'); // Debug log
       
-      const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+      const response = await fetch('http://16.171.34.205:8002/api/auth/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
