@@ -51,7 +51,7 @@ const navGroups: NavGroup[] = [
     title: 'Narrative',
     icon: FileText,
     items: [
-      { id: 'landing', label: 'Landing', icon: Home },
+      { id: 'landing', label: 'Home', icon: Home },
       { id: 'why-multifly', label: 'Why Multifly', icon: Target },
       { id: 'how-it-works', label: 'How It Works', icon: HelpCircle },
     ],
@@ -202,18 +202,7 @@ export function LeftNav() {
                 className="space-y-3"
               >
                 {/* Group Header */}
-                <motion.div 
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-sidebar-accent/30 to-transparent border-l-2 border-gold/40"
-                  whileHover={{ x: 2 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {GroupIcon && (
-                    <GroupIcon className="w-4 h-4 text-gold" />
-                  )}
-                  <h3 className="text-xs font-bold text-sidebar-primary uppercase tracking-wider">
-                    {group.title}
-                  </h3>
-                </motion.div>
+        
 
                 {/* Group Items */}
                 <motion.ul className="space-y-1 pl-2">
