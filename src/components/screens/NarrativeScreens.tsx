@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 import { Input } from '@/components/ui/input';
 import { useAppStore } from '@/lib/store';
 import { ArrowRight, CheckCircle2, Users, TrendingUp, Shield, Zap, Globe, Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
@@ -54,11 +55,29 @@ export function LandingScreen() {
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
-    <div ref={containerRef} className="max-w-5xl mx-auto py-16 lg:py-24 px-4 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-navy/5 pointer-events-none" />
-      <div className="absolute top-20 right-10 w-64 h-64 bg-gold/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-20 left-10 w-48 h-48 bg-navy/10 rounded-full blur-2xl pointer-events-none" />
+    <div ref={containerRef} className="max-w-6xl mx-auto py-20 lg:py-32 px-6 relative overflow-hidden">
+      {/* Animated Investment SVGs */}
+      <div className="absolute top-8 left-8 w-32 h-32 z-0 pointer-events-none animate-bounce-slow">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="80" rx="30" ry="8" fill="#FFD700" opacity="0.7" />
+          <rect x="35" y="60" width="30" height="20" rx="8" fill="#FFD700" stroke="#bfa100" strokeWidth="2" />
+          <rect x="38" y="50" width="24" height="12" rx="6" fill="#FFF8DC" stroke="#bfa100" strokeWidth="1.5" />
+          <path d="M50 60 L50 30 M50 30 L45 35 M50 30 L55 35" stroke="#22c55e" strokeWidth="3" strokeLinecap="round" />
+        </svg>
+      </div>
+      <div className="absolute bottom-8 right-8 w-40 h-40 z-0 pointer-events-none animate-spin-slow">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="60" width="10" height="20" fill="#0ea5e9" rx="2" />
+          <rect x="35" y="50" width="10" height="30" fill="#38bdf8" rx="2" />
+          <rect x="50" y="40" width="10" height="40" fill="#22c55e" rx="2" />
+          <rect x="65" y="30" width="10" height="50" fill="#FFD700" rx="2" />
+          <text x="80" y="90" fontSize="24" fill="#FFD700" fontWeight="bold">$</text>
+        </svg>
+      </div>
+      {/* Enhanced Background Elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gold/10 via-navy/5 to-white/10 pointer-events-none" />
+      <div className="absolute top-10 right-10 w-80 h-80 bg-gold/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+      <div className="absolute bottom-10 left-10 w-64 h-64 bg-navy/20 rounded-full blur-2xl pointer-events-none animate-pulse" />
 
       {/* Hero Section */}
       <motion.div
@@ -66,35 +85,35 @@ export function LandingScreen() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="text-center mb-20 relative z-10"
+        className="text-center mb-28 relative z-10"
       >
         <motion.div 
           variants={itemVariants}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-gold-muted to-navy-muted border border-gold/30 mb-8 backdrop-blur-sm"
+          className="inline-flex items-center gap-4 px-8 py-4 rounded-full bg-gradient-to-r from-gold-muted to-navy-muted border-2 border-gold/40 mb-12 backdrop-blur-lg shadow-2xl"
         >
           <motion.span 
-            className="h-2 w-2 rounded-full bg-gold"
-            animate={{ scale: [1, 1.2, 1] }}
+            className="h-4 w-4 rounded-full bg-gold animate-pulse"
+            animate={{ scale: [1, 1.4, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
-          <span className="text-sm font-medium bg-gradient-to-r from-gold to-navy bg-clip-text text-transparent tracking-wide uppercase">
+          <span className="text-lg font-bold bg-gradient-to-r from-gold to-navy bg-clip-text text-transparent tracking-wide uppercase">
             Wealth Orchestration Platform
           </span>
         </motion.div>
 
         <motion.h1 
           variants={itemVariants}
-          className="font-serif text-5xl lg:text-7xl font-bold text-foreground mb-8 leading-tight"
+          className="font-serif text-7xl lg:text-9xl font-extrabold text-foreground mb-12 leading-tight drop-shadow-2xl"
         >
           Your global wealth,{' '}
-          <span className="bg-gradient-to-r from-gold via-navy to-gold bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-gold via-navy to-gold bg-clip-text text-transparent animate-gradient-x">
             designed as one plan
           </span>
         </motion.h1>
 
         <motion.p 
           variants={itemVariants}
-          className="text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-light"
+          className="text-3xl lg:text-4xl text-muted-foreground max-w-5xl mx-auto mb-16 leading-relaxed font-light"
         >
           MULTIFLY is a relationship-led wealth orchestration platform: one RM, a living blueprint, 
           curated opportunities, and partner-executed investing.
@@ -102,15 +121,15 @@ export function LandingScreen() {
 
         <motion.div 
           variants={itemVariants}
-          className="flex flex-col sm:flex-row items-center justify-center gap-6"
+          className="flex flex-col sm:flex-row items-center justify-center gap-10"
         >
           <Button 
             onClick={() => setCurrentScreen('how-it-works')} 
             size="lg"
-            className="group bg-gradient-to-r from-navy to-navy-light hover:from-navy-light hover:to-navy text-gold px-10 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            className="group bg-gradient-to-r from-navy to-navy-light hover:from-navy-light hover:to-navy text-gold px-16 py-6 text-2xl font-bold shadow-3xl hover:shadow-4xl transition-all duration-300 rounded-3xl"
           >
             View How Multifly Works
-            <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+            <ArrowRight className="ml-5 h-7 w-7 group-hover:translate-x-2 transition-transform duration-300" />
           </Button>
           <Button 
             variant="outline" 
@@ -119,10 +138,10 @@ export function LandingScreen() {
               setCurrentRole('rm');
               setCurrentScreen('rm-dashboard');
             }}
-            className="group border-2 border-navy/40 text-navy hover:bg-navy hover:text-gold px-10 py-4 text-lg font-semibold transition-all duration-300"
+            className="group border-2 border-navy/40 text-navy hover:bg-navy hover:text-gold px-16 py-6 text-2xl font-bold rounded-3xl transition-all duration-300"
           >
             Explore the Product
-            <Zap className="ml-3 h-5 w-5 group-hover:rotate-12 transition-transform duration-300" />
+            <Zap className="ml-5 h-7 w-7 group-hover:rotate-12 transition-transform duration-300" />
           </Button>
         </motion.div>
       </motion.div>
@@ -238,25 +257,73 @@ export function LandingScreen() {
 }
 
 export function WhyMultiflyScreen() {
+    // ...existing code...
+    // Animated investment icons
+    const animatedIconStyle = {
+      display: 'inline-block',
+      animation: 'spin 2s linear infinite',
+      margin: '0 12px',
+      verticalAlign: 'middle',
+    };
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true });
-
   return (
     <div ref={containerRef} className="max-w-5xl mx-auto py-16 px-4">
-      <motion.div 
-        initial={{ opacity: 0, y: 50 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8 }}
-        className="text-center mb-16"
-      >
-        <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground mb-4">
-          Why <span className="bg-gradient-to-r from-gold to-navy bg-clip-text text-transparent">Multifly</span>
-        </h2>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Transform fragmented wealth management into unified orchestration
-        </p>
-      </motion.div>
-      
+      {/* Animated Investment Icons */}
+      <div className="flex justify-center gap-8 mb-10">
+        <motion.span animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2 }}>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#FFD700" strokeWidth="4" /><text x="12" y="27" fontSize="18" fill="#FFD700" fontWeight="bold">$</text></svg>
+        </motion.span>
+        <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="10" y="20" width="8" height="16" fill="#22c55e" /><rect x="22" y="10" width="8" height="26" fill="#0ea5e9" /><rect x="34" y="5" width="4" height="31" fill="#FFD700" /></svg>
+        </motion.span>
+        <motion.span animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 1.2 }}>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="32" rx="14" ry="6" fill="#FFF8DC" /><rect x="14" y="16" width="12" height="16" rx="4" fill="#FFD700" stroke="#bfa100" strokeWidth="2" /><path d="M20 16 L20 8 M20 8 L16 12 M20 8 L24 12" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" /></svg>
+        </motion.span>
+      </div>
+            {/* FAQ Section */}
+            <div className="max-w-3xl mx-auto my-16">
+              <h2 className="text-4xl font-extrabold text-center mb-10 bg-gradient-to-r from-navy to-gold bg-clip-text text-transparent tracking-tight drop-shadow-lg">Frequently Asked Questions</h2>
+              <Accordion type="multiple" className="w-full rounded-2xl bg-gradient-to-br from-navy/5 via-gold/10 to-white/80 shadow-2xl border border-gold/30 p-2">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger className="flex items-center gap-3 px-6 py-5 text-lg font-semibold rounded-xl bg-white/80 hover:bg-gold/10 transition-all duration-300 shadow-sm">
+                    <span className="inline-block w-8 h-8 bg-gradient-to-br from-gold to-navy rounded-full flex items-center justify-center text-white font-bold mr-2 animate-bounce">1</span>
+                    <span className="flex items-center gap-2"><svg width='20' height='20' fill='none'><path d='M10 2a8 8 0 100 16 8 8 0 000-16zm0 14.5A6.5 6.5 0 1110 3.5a6.5 6.5 0 010 13z' fill='#FFD700'/></svg> What is the Wealth Orchestration Platform?</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-8 py-6 text-base text-navy bg-white/60 rounded-xl shadow-inner animate-fade-in">
+                    Our platform unifies your global wealth into a single, living plan, providing access to curated opportunities and seamless execution with expert guidance.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                  <AccordionTrigger className="flex items-center gap-3 px-6 py-5 text-lg font-semibold rounded-xl bg-white/80 hover:bg-gold/10 transition-all duration-300 shadow-sm">
+                    <span className="inline-block w-8 h-8 bg-gradient-to-br from-gold to-navy rounded-full flex items-center justify-center text-white font-bold mr-2 animate-bounce">2</span>
+                    <span className="flex items-center gap-2"><svg width='20' height='20' fill='none'><path d='M10 2a8 8 0 100 16 8 8 0 000-16zm0 14.5A6.5 6.5 0 1110 3.5a6.5 6.5 0 010 13z' fill='#22c55e'/></svg> Who can use MULTIFLY?</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-8 py-6 text-base text-navy bg-white/60 rounded-xl shadow-inner animate-fade-in">
+                    MULTIFLY is designed for high-net-worth individuals, families, and their trusted advisors seeking a holistic, relationship-led approach to wealth management.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-3">
+                  <AccordionTrigger className="flex items-center gap-3 px-6 py-5 text-lg font-semibold rounded-xl bg-white/80 hover:bg-gold/10 transition-all duration-300 shadow-sm">
+                    <span className="inline-block w-8 h-8 bg-gradient-to-br from-gold to-navy rounded-full flex items-center justify-center text-white font-bold mr-2 animate-bounce">3</span>
+                    <span className="flex items-center gap-2"><svg width='20' height='20' fill='none'><path d='M10 2a8 8 0 100 16 8 8 0 000-16zm0 14.5A6.5 6.5 0 1110 3.5a6.5 6.5 0 010 13z' fill='#0ea5e9'/></svg> How is my information kept secure?</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-8 py-6 text-base text-navy bg-white/60 rounded-xl shadow-inner animate-fade-in">
+                    We use advanced security protocols and strict compliance standards to ensure your data and assets are protected at all times.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-4">
+                  <AccordionTrigger className="flex items-center gap-3 px-6 py-5 text-lg font-semibold rounded-xl bg-white/80 hover:bg-gold/10 transition-all duration-300 shadow-sm">
+                    <span className="inline-block w-8 h-8 bg-gradient-to-br from-gold to-navy rounded-full flex items-center justify-center text-white font-bold mr-2 animate-bounce">4</span>
+                    <span className="flex items-center gap-2"><svg width='20' height='20' fill='none'><path d='M10 2a8 8 0 100 16 8 8 0 000-16zm0 14.5A6.5 6.5 0 1110 3.5a6.5 6.5 0 010 13z' fill='#FFD700'/></svg> Can I access global investment opportunities?</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-8 py-6 text-base text-navy bg-white/60 rounded-xl shadow-inner animate-fade-in">
+                    Yes, our platform provides access to vetted global opportunities across private and public markets, tailored to your profile and goals.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+      {/* ...existing code... */}
       <div className="grid lg:grid-cols-2 gap-8 mb-12">
         {/* Left: Today's Reality */}
         <motion.div 
@@ -371,35 +438,84 @@ export function HowItWorksScreen() {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={isInView ? { opacity: 1, scale: 1 } : {}}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="card-premium p-8 mb-16 overflow-x-auto"
+        className="card-premium py-16 px-8 mb-16 overflow-x-auto rounded-3xl bg-gradient-to-br from-gold/10 via-white/60 to-navy/10 border-2 border-gold/20 shadow-2xl hover:shadow-gold/30 transition-all duration-500 relative group min-h-[320px]"
       >
         <div className="flex items-center justify-center gap-4 min-w-max">
-          {['Client', 'Relationship Manager', 'Internal Advisor Bench', 'Regulated Partners', 'Portfolio + Reporting'].map((step, idx, arr) => (
-            <div key={step} className="flex items-center">
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.6, delay: 0.4 + idx * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                className={`px-6 py-3 rounded-xl text-sm font-bold whitespace-nowrap transition-all duration-300 cursor-pointer ${
-                  idx === 0 ? 'bg-gradient-to-r from-gold to-gold-light text-navy shadow-lg hover:shadow-xl' :
-                  idx === arr.length - 1 ? 'bg-gradient-to-r from-success to-success-light text-white shadow-lg hover:shadow-xl' :
-                  'bg-gradient-to-r from-navy to-navy-light text-gold shadow-lg hover:shadow-xl'
-                }`}
+          {(() => {
+            const steps = [
+              {
+                label: 'Client',
+                img: 'https://randomuser.me/api/portraits/men/32.jpg',
+              },
+              {
+                label: 'Relationship Manager',
+                img: 'https://randomuser.me/api/portraits/women/44.jpg',
+              },
+              {
+                label: 'Internal Advisor Bench',
+                img: 'https://randomuser.me/api/portraits/men/65.jpg',
+              },
+              {
+                label: 'Regulated Partners',
+                img: 'https://randomuser.me/api/portraits/women/22.jpg',
+              },
+              {
+                label: 'Portfolio + Reporting',
+                img: 'https://randomuser.me/api/portraits/men/12.jpg',
+              },
+            ];
+            return (
+              <div
+                className="flex items-end justify-center gap-8 min-w-max relative sm:flex-row flex-col sm:h-[170px] h-auto"
               >
-                {step}
-              </motion.div>
-              {idx < arr.length - 1 && (
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.6, delay: 0.6 + idx * 0.1 }}
-                >
-                  <ArrowRight className="h-5 w-5 mx-4 text-gold" />
-                </motion.div>
-              )}
-            </div>
-          ))}
+                {steps.map((step, idx, arr) => {
+                  // Arc/curve effect: adjust translateY for each index (horizontal), none for mobile
+                  const arc = [40, 15, 0, 15, 40];
+                  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+                  const translateY = isMobile ? 0 : arc[idx];
+                  return (
+                    <div
+                      key={step.label}
+                      className="flex flex-col items-center"
+                      style={{ transform: `translateY(${translateY}px)` }}
+                    >
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                        transition={{ duration: 0.6, delay: 0.4 + idx * 0.1 }}
+                        className={`relative flex flex-col items-center justify-center h-24 w-24 rounded-full shadow-xl border-4 ${
+                          idx === 0 ? 'border-gold bg-gradient-to-br from-gold/30 to-gold-light/40' :
+                          idx === arr.length - 1 ? 'border-gold bg-gradient-to-br from-gold/30 to-gold-light/40' :
+                          'border-navy bg-gradient-to-br from-navy/30 to-navy-light/40'
+                        }`}
+                      >
+                        <img
+                          src={step.img}
+                          alt={step.label}
+                          className="h-16 w-16 rounded-full object-cover border-2 border-white shadow-md bg-white"
+                        />
+                      </motion.div>
+                      <span
+                        className="mt-2 px-2 py-0.5 text-xs font-semibold rounded bg-white/90 text-navy shadow text-center"
+                        style={{maxWidth:'90%',whiteSpace:'normal'}}
+                      >
+                        {step.label}
+                      </span>
+                      {(idx < arr.length - 1 || idx === arr.length - 1) && (
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={isInView ? { opacity: 1, x: 0 } : {}}
+                          transition={{ duration: 0.6, delay: 0.6 + idx * 0.1 }}
+                        >
+                          <ArrowRight className={`h-5 w-5 text-gold mt-2 ${idx === arr.length - 1 ? 'sm:block hidden' : ''}`} />
+                        </motion.div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
       </motion.div>
 

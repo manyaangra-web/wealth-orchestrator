@@ -77,23 +77,23 @@ export function RMDashboardScreen() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="max-w-4xl mx-auto space-y-8 px-6 py-8"
+      className="max-w-4xl mx-auto space-y-10 px-6 py-10"
     >
       {/* Welcome Header */}
       <motion.div variants={itemVariants} className="relative overflow-hidden">
-        <div className="card-elevated p-8 bg-gradient-to-br from-navy via-navy-light to-navy-muted">
-          <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-transparent to-gold/5" />
-          <div className="relative flex items-center gap-6">
+        <div className="card-elevated p-10 bg-gradient-to-br from-navy/90 via-navy-light/80 to-navy-muted/90 backdrop-blur-xl shadow-2xl border border-gold/20 rounded-3xl">
+          <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-transparent to-gold/5 animate-gradient-x" />
+          <div className="relative flex items-center gap-8">
             <motion.div 
-              className="h-16 w-16 rounded-2xl bg-gradient-to-br from-gold via-gold-light to-gold-muted flex items-center justify-center shadow-lg"
-              whileHover={{ scale: 1.05, rotate: 5 }}
+              className="h-20 w-20 rounded-3xl bg-gradient-to-br from-gold via-gold-light to-gold-muted flex items-center justify-center shadow-xl border-2 border-gold/30"
+              whileHover={{ scale: 1.08, rotate: 8 }}
               transition={{ duration: 0.3 }}
             >
-              <span className="text-navy font-bold text-xl">RK</span>
+              <span className="text-navy font-serif text-2xl font-bold">RK</span>
             </motion.div>
             <div>
               <motion.h2 
-                className="font-serif text-3xl font-bold text-gold mb-2"
+                className="font-serif text-4xl font-extrabold text-gold drop-shadow mb-2 tracking-tight"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
@@ -101,7 +101,7 @@ export function RMDashboardScreen() {
                 Welcome back, Riya Kapoor
               </motion.h2>
               <motion.p 
-                className="text-gold-muted text-lg flex items-center gap-2"
+                className="text-gold-muted text-lg flex items-center gap-2 font-medium"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
@@ -116,8 +116,9 @@ export function RMDashboardScreen() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5, duration: 0.5 }}
             >
-              <div className="px-4 py-2 bg-gold/20 rounded-full border border-gold/30">
-                <span className="text-gold text-sm font-medium">Portfolio Value: $12.5M</span>
+              <div className="px-6 py-3 bg-gold/30 rounded-full border border-gold/40 shadow-lg flex items-center gap-2 animate-pulse-slow">
+                <span className="text-gold text-lg font-bold tracking-wide">Portfolio Value:</span>
+                <span className="text-navy font-extrabold text-xl">$12.5M</span>
               </div>
             </motion.div>
           </div>
@@ -125,7 +126,7 @@ export function RMDashboardScreen() {
       </motion.div>
 
       {/* Quick Stats */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
           { label: 'Active Clients', value: '8', icon: Users, color: 'text-blue-500' },
           { label: 'Pending Approvals', value: '3', icon: Clock, color: 'text-amber-500' },
@@ -137,15 +138,15 @@ export function RMDashboardScreen() {
             variants={cardHoverVariants}
             initial="rest"
             whileHover="hover"
-            className="card-elevated p-4 cursor-pointer bg-gradient-to-br from-card to-muted/20"
+            className="card-elevated p-6 cursor-pointer bg-gradient-to-br from-white/60 to-gold/10 border border-gold/10 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
           >
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg bg-muted/50 ${stat.color}`}>
-                <stat.icon className="h-4 w-4" />
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-xl bg-gradient-to-br from-gold/20 to-gold/40 shadow ${stat.color}`}>
+                <stat.icon className="h-6 w-6" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">{stat.label}</p>
+                <p className="text-3xl font-extrabold text-navy drop-shadow">{stat.value}</p>
+                <p className="text-xs text-gold font-semibold uppercase tracking-wider">{stat.label}</p>
               </div>
             </div>
           </motion.div>
@@ -595,20 +596,27 @@ export function OnboardingChecklistScreen() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.6 }}
-        className="card-elevated p-8"
+        className="relative card-elevated p-10 bg-white shadow-2xl border border-gold/20 rounded-3xl overflow-hidden"
       >
-        <div className="flex items-center justify-between mb-8">
+        {/* No animated gradient border, simple white background */}
+        <div className="relative flex items-center justify-between mb-10 z-10">
           <motion.h3
-            className="font-serif text-2xl font-bold text-foreground flex items-center gap-3"
+            className="font-serif text-3xl font-extrabold text-navy flex items-center gap-4 drop-shadow tracking-tight"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            <CheckCircle2 className="h-6 w-6 text-gold" />
+            <motion.span
+              animate={{ rotate: [0, 360] }}
+              transition={{ repeat: Infinity, duration: 6, ease: 'linear' }}
+              className="inline-block"
+            >
+              <CheckCircle2 className="h-9 w-9 text-gold animate-bounce-slow" />
+            </motion.span>
             Onboarding Progress
           </motion.h3>
           <motion.span
-            className="text-2xl font-bold text-gold"
+            className="text-3xl font-extrabold text-gold bg-white/80 px-6 py-2 rounded-full border border-gold/40 shadow-lg animate-pulse-slow"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.5, duration: 0.5, type: "spring" }}

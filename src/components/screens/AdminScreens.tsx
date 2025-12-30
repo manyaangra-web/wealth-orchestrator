@@ -57,31 +57,47 @@ export function CountryCatalogScreen() {
           {products.map((p, idx) => (
             <motion.div
               key={p.name}
-              {...fadeInUp}
-              variants={cardHover}
-              initial="rest"
-              whileHover="hover"
-              transition={{ delay: idx * 0.05, duration: 0.4 }}
-              className="card-elevated p-5 flex items-center justify-between bg-gradient-to-r from-white to-muted border border-border shadow transition-all"
+              initial={{ opacity: 0, y: 30, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              whileHover={{ scale: 1.03, boxShadow: '0 8px 32px 0 rgba(16, 24, 40, 0.18)' }}
+              transition={{ delay: idx * 0.07, duration: 0.5, type: 'spring' }}
+              className="relative card-elevated p-6 flex items-center justify-between bg-white/70 backdrop-blur-md border border-gold/20 shadow-xl rounded-2xl overflow-hidden group transition-all duration-300"
             >
-              <div className="flex items-center gap-4">
-                <div className="h-10 w-10 rounded-lg bg-navy-muted flex items-center justify-center">
-                  <span className="text-navy font-bold text-xs">
+              {/* Animated gradient accent bar */}
+              <motion.div
+                className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-gold via-navy to-gold/60 rounded-l-2xl opacity-80 group-hover:opacity-100"
+                initial={{ scaleY: 0.7, opacity: 0.5 }}
+                animate={{ scaleY: 1, opacity: 1 }}
+                transition={{ delay: 0.2 + idx * 0.05, duration: 0.6, type: 'spring' }}
+                layout
+              />
+              <div className="flex items-center gap-4 z-10">
+                <motion.div
+                  className="h-12 w-12 rounded-xl bg-gradient-to-br from-navy to-navy-light flex items-center justify-center shadow-lg"
+                  whileHover={{ rotate: 8, scale: 1.08 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <span className="text-gold font-bold text-lg">
                     {p.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
                   </span>
-                </div>
+                </motion.div>
                 <div>
-                  <p className="text-base font-semibold text-foreground">{p.name}</p>
+                  <p className="text-base font-semibold text-navy group-hover:text-gold transition-colors duration-200">{p.name}</p>
                   <p className="text-xs text-gold font-medium">{p.partner}</p>
                 </div>
               </div>
-              <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${
-                p[country as keyof typeof p] === 'Allowed' 
-                  ? 'bg-success-muted text-success border border-success/20' 
-                  : 'bg-destructive/10 text-destructive border border-destructive/20'
-              }`}>
+              <motion.span
+                className={`px-4 py-2 rounded-full text-xs font-bold border shadow-sm transition-all duration-300 z-10 ${
+                  p[country as keyof typeof p] === 'Allowed'
+                    ? 'bg-success-muted/80 text-success border-success/30 group-hover:bg-success/90 group-hover:text-white'
+                    : 'bg-destructive/10 text-destructive border-destructive/30 group-hover:bg-destructive group-hover:text-white'
+                }`}
+                initial={{ scale: 0.95, opacity: 0.8 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.3 + idx * 0.05, duration: 0.4 }}
+              >
                 {p[country as keyof typeof p]}
-              </span>
+              </motion.span>
             </motion.div>
           ))}
         </AnimatePresence>
