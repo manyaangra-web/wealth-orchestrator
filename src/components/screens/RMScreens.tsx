@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { StatusChip, ProgressBar } from '@/components/ui/StatusChip';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Select,
   SelectContent,
@@ -329,11 +329,26 @@ export function Client360Screen() {
   const blueprint = getBlueprint(selectedClient);
   const recommendations = getClientRecommendations(selectedClient);
   const [activeTab, setActiveTab] = useState('profile');
+  const [isBlueprintSubmitted, setIsBlueprintSubmitted] = useState(false);
+  const [isRecommendationDraftSubmitted, setIsRecommendationDraftSubmitted] =
+  useState(false);
 
   const handleSendToClient = () => {
-    toast.success('Blueprint shared with client');
-  };
+  localStorage.setItem('sent_to_client', JSON.stringify(true));
+  toast.success('Blueprint shared with client');
+};
+useEffect(() => {
+  const value = JSON.parse(
+    localStorage.getItem('Submit_Blueprint_Draft') || 'false'
+  );
+  setIsBlueprintSubmitted(value);
+}, []);
 
+useEffect(() => {
+  setIsRecommendationDraftSubmitted(
+    JSON.parse(localStorage.getItem('Submit_Recommendation_Draft') || 'false')
+  );
+}, []);
   const tabs = ['Profile', 'Blueprint', 'Recommendations', 'Structuring', 'Activity'];
 
   return (
@@ -467,72 +482,103 @@ export function Client360Screen() {
           )}
 
           {activeTab === 'blueprint' && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <StatusChip status={blueprint.status} />
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button 
-                    onClick={handleSendToClient} 
-                    className="bg-navy hover:bg-navy-light text-gold transition-all duration-300"
-                  >
-                    Send to Client
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </motion.div>
-              </div>
-              <div className="space-y-4">
-                {blueprint.allocationTargets.map((target, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
-                    className="flex items-center gap-4 p-4 rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors duration-300"
-                  >
-                    <span className="text-sm text-foreground w-48 font-medium">{target.name}</span>
-                    <div className="flex-1">
-                      <ProgressBar progress={target.percentage} />
-                    </div>
-                    <span className="text-sm font-bold text-navy w-16 text-right">{target.percentage}%</span>
-                  </motion.div>
-                ))}
-              </div>
+  isBlueprintSubmitted ? (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.2 }}
+        >
+          <StatusChip status={blueprint.status} />
+        </motion.div>
+
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button
+            onClick={handleSendToClient}
+            className="bg-navy hover:bg-navy-light text-gold transition-all duration-300"
+          >
+            Send to Client
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </motion.div>
+      </div>
+
+      <div className="space-y-4">
+        {blueprint.allocationTargets.map((target, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: i * 0.1, duration: 0.5 }}
+            className="flex items-center gap-4 p-4 rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors duration-300"
+          >
+            <span className="text-sm text-foreground w-48 font-medium">
+              {target.name}
+            </span>
+            <div className="flex-1">
+              <ProgressBar progress={target.percentage} />
             </div>
-          )}
+            <span className="text-sm font-bold text-navy w-16 text-right">
+              {target.percentage}%
+            </span>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  ) : (
+    // ❌ Empty State
+    <div className="flex items-center justify-center h-64">
+      <p className="text-muted-foreground text-lg font-medium">
+        No blueprints found
+      </p>
+    </div>
+  )
+)}
+
 
           {activeTab === 'recommendations' && (
-            <div className="space-y-4">
-              {recommendations.map((rec, index) => (
-                <motion.div
-                  key={rec.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  whileHover={{ scale: 1.02 }}
-                  className="p-6 rounded-xl bg-gradient-to-r from-navy-muted to-gold-muted/20 border border-navy/10 hover:border-gold/30 transition-all duration-300 flex items-center justify-between"
-                >
-                  <div>
-                    <p className="text-lg font-semibold text-foreground mb-1">{rec.name}</p>
-                    <p className="text-sm text-muted-foreground">{rec.partner} • {rec.amount}</p>
-                  </div>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <StatusChip status={rec.status} />
-                  </motion.div>
-                </motion.div>
-              ))}
-            </div>
-          )}
+  isRecommendationDraftSubmitted ? (
+    <div className="space-y-4">
+      {recommendations.map((rec, index) => (
+        <motion.div
+          key={rec.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1, duration: 0.5 }}
+          whileHover={{ scale: 1.02 }}
+          className="p-6 rounded-xl bg-gradient-to-r from-navy-muted to-gold-muted/20 border border-navy/10 hover:border-gold/30 transition-all duration-300 flex items-center justify-between"
+        >
+          <div>
+            <p className="text-lg font-semibold text-foreground mb-1">
+              {rec.name}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {rec.partner} • {rec.amount}
+            </p>
+          </div>
+
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+          >
+            <StatusChip status={rec.status} />
+          </motion.div>
+        </motion.div>
+      ))}
+    </div>
+  ) : (
+    // ❌ Empty State
+    <div className="flex items-center justify-center h-64">
+      <p className="text-muted-foreground text-lg font-medium">
+        No recommendations yet
+      </p>
+    </div>
+  )
+)}
+
 
           {activeTab === 'activity' && (
             <div className="space-y-4">
@@ -686,10 +732,29 @@ export function FACollaborationScreen() {
   const handleRequest = () => {
     const types: Record<string, string> = {
       blueprint: 'Blueprint Draft',
-      recommendation: 'Recommendation Draft',
+      recommendation: 'Recommendation Draft',  
       structuring: 'Structuring Guidance',
     };
-    createFARequest(selectedClient, requestType as any, `${types[requestType]} requested by RM`);
+    const requestTitle = `${types[requestType]} requested by RM`;
+    createFARequest(selectedClient, requestType as any, requestTitle);
+    
+    // Save to localStorage
+    try {
+      const existingRequests = JSON.parse(localStorage.getItem('faRequests') || '[]');
+      const requestToSave = {
+        id: `request-${Date.now()}`,
+        clientId: selectedClient,
+        type: requestType,
+        title: requestTitle,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+      existingRequests.push(requestToSave);
+      localStorage.setItem('faRequests', JSON.stringify(existingRequests));
+    } catch (error) {
+      console.error('Failed to save FA request to localStorage:', error);
+    }
+    
     toast.success('Request sent to FA');
   };
 
@@ -752,11 +817,11 @@ export function FACollaborationScreen() {
                   </div>
                   <div className="flex gap-2">
                     <motion.div whileHover={{ scale: 1.08 }}>
-                      <Button size="sm" onClick={() => handleApprove(req.id)} className="bg-navy hover:bg-navy-light text-gold shadow">
+                      {/* <Button size="sm" onClick={() => handleApprove(req.id)} className="bg-navy hover:bg-navy-light text-gold shadow">
                         Approve
-                      </Button>
+                      </Button> */}
                     </motion.div>
-                    <Button size="sm" variant="outline" className="border-border">Request Changes</Button>
+                    {/* <Button size="sm" variant="outline" className="border-border">Request Changes</Button> */}
                   </div>
                 </motion.div>
               ))}
@@ -853,7 +918,14 @@ export function RecommendationsPipelineScreen() {
 export function StructuringCasesScreen() {
   const { selectedClient, getClientStructuringCases, updateStructuringStatus, setCurrentScreen } = useAppStore();
   const cases = getClientStructuringCases(selectedClient);
+  const [isRecommendationApproved, setIsRecommendationApproved] =
+  useState(false);
 
+  useEffect(() => {
+  setIsRecommendationApproved(
+    JSON.parse(localStorage.getItem('Approve_Recommendation') || 'false')
+  );
+}, []);
   const getProgress = (items: { checked: boolean }[]) => {
     if (items.length === 0) return 0;
     return (items.filter((i) => i.checked).length / items.length) * 100;
@@ -865,56 +937,92 @@ export function StructuringCasesScreen() {
       className="max-w-2xl mx-auto space-y-8 px-4"
     >
       <AnimatePresence>
-        {cases.length === 0 ? (
-          <motion.div
-            {...fadeInUp}
-            className="card-premium p-8 text-center bg-gradient-to-br from-muted/30 to-gold-muted/10"
-          >
-            <p className="text-sm text-muted-foreground">No structuring cases for this client yet.</p>
-          </motion.div>
-        ) : (
-          cases.map((sc) => (
-            <motion.div
-              key={sc.id}
-              {...fadeInUp}
-              variants={cardHover}
-              initial="rest"
-              whileHover="hover"
-              className="card-elevated p-6 shadow transition-all duration-300"
+  {!isRecommendationApproved ? (
+    // ❌ Blocked state
+    <motion.div
+      {...fadeInUp}
+      className="card-premium p-8 text-center bg-gradient-to-br from-muted/30 to-gold-muted/10"
+    >
+      <p className="text-sm text-muted-foreground">
+        No structuring cases to show yet.
+      </p>
+    </motion.div>
+  ) : cases.length === 0 ? (
+    // ⚠️ Approved but no cases
+    <motion.div
+      {...fadeInUp}
+      className="card-premium p-8 text-center bg-gradient-to-br from-muted/30 to-gold-muted/10"
+    >
+      <p className="text-sm text-muted-foreground">
+        No structuring cases for this client yet.
+      </p>
+    </motion.div>
+  ) : (
+    // ✅ Approved + cases available
+    cases.map((sc) => (
+      <motion.div
+        key={sc.id}
+        {...fadeInUp}
+        variants={cardHover}
+        initial="rest"
+        whileHover="hover"
+        className="card-elevated p-6 shadow transition-all duration-300"
+      >
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h3 className="font-semibold text-foreground">{sc.name}</h3>
+            <p className="text-sm text-muted-foreground">{sc.checklistTitle}</p>
+          </div>
+          <StatusChip status={sc.status} />
+        </div>
+
+        <ProgressBar
+          progress={getProgress(sc.checklistItems)}
+          className="mb-5"
+        />
+
+        <div className="flex gap-3">
+          <motion.div whileHover={{ scale: 1.05 }}>
+            <Button
+              variant="outline"
+              onClick={() => setCurrentScreen('country-checklist')}
+              className="border-navy/20 text-navy hover:bg-navy-muted"
             >
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="font-semibold text-foreground">{sc.name}</h3>
-                  <p className="text-sm text-muted-foreground">{sc.checklistTitle}</p>
-                </div>
-                <StatusChip status={sc.status} />
-              </div>
-              <ProgressBar progress={getProgress(sc.checklistItems)} className="mb-5" />
-              <div className="flex gap-3">
-                <motion.div whileHover={{ scale: 1.05 }}>
-                  <Button variant="outline" onClick={() => setCurrentScreen('country-checklist')} className="border-navy/20 text-navy hover:bg-navy-muted">
-                    Open Case
-                  </Button>
-                </motion.div>
-                {sc.status === 'not-started' && (
-                  <motion.div whileHover={{ scale: 1.05 }}>
-                    <Button onClick={() => updateStructuringStatus(sc.id, 'in-progress')} className="bg-gold hover:bg-gold-light text-navy">
-                      Mark In Progress
-                    </Button>
-                  </motion.div>
-                )}
-                {sc.status === 'in-progress' && getProgress(sc.checklistItems) === 100 && (
-                  <motion.div whileHover={{ scale: 1.05 }}>
-                    <Button onClick={() => updateStructuringStatus(sc.id, 'completed')} className="bg-success hover:bg-success/90 text-white">
-                      Complete Case
-                    </Button>
-                  </motion.div>
-                )}
-              </div>
+              Open Case
+            </Button>
+          </motion.div>
+
+          {sc.status === 'not-started' && (
+            <motion.div whileHover={{ scale: 1.05 }}>
+              <Button
+                onClick={() =>
+                  updateStructuringStatus(sc.id, 'in-progress')
+                }
+                className="bg-gold hover:bg-gold-light text-navy"
+              >
+                Mark In Progress
+              </Button>
             </motion.div>
-          ))
-        )}
-      </AnimatePresence>
+          )}
+
+          {sc.status === 'in-progress' &&
+            getProgress(sc.checklistItems) === 100 && (
+              <motion.div whileHover={{ scale: 1.05 }}>
+                <Button
+                  onClick={() =>
+                    updateStructuringStatus(sc.id, 'completed')
+                  }
+                  className="bg-success hover:bg-success/90 text-white"
+                >
+                  Complete Case
+                </Button>
+              </motion.div>
+            )}
+        </div>
+      </motion.div>
+    ))
+  )}
+</AnimatePresence>
     </motion.div>
   );
 }
@@ -1100,8 +1208,30 @@ export function QuarterlyReportBuilderScreen() {
   const [showPreview, setShowPreview] = useState(false);
 
   const handlePublish = () => {
+    const newReport = {
+      id: crypto.randomUUID(),       // unique per report
+      period,
+      notes,
+      publishedAt: new Date().toISOString(),
+    };
+
+    // 🔹 Get existing reports
+    const existingReports = JSON.parse(
+      localStorage.getItem('quarterly_reports') || '[]'
+    );
+
+    // 🔹 Add report one by one
+    existingReports.push(newReport);
+
+    // 🔹 Save back to localStorage
+    localStorage.setItem(
+      'quarterly_reports',
+      JSON.stringify(existingReports)
+    );
+
     toast.success('Report published to Client Portal');
     setShowPreview(false);
+    setNotes('');
   };
 
   return (
@@ -1109,9 +1239,15 @@ export function QuarterlyReportBuilderScreen() {
       {...fadeInUp}
       className="max-w-xl mx-auto space-y-8 px-4"
     >
-      <motion.div {...fadeInUp} className="card-elevated p-6 space-y-5 bg-gradient-to-br from-navy via-navy-light to-navy-muted shadow-lg">
+      {/* Builder */}
+      <motion.div
+        {...fadeInUp}
+        className="card-elevated p-6 space-y-5 bg-gradient-to-br from-navy via-navy-light to-navy-muted shadow-lg"
+      >
         <div>
-          <label className="text-sm font-semibold text-gold mb-3 block">Reporting Period</label>
+          <label className="text-sm font-semibold text-gold mb-3 block">
+            Reporting Period
+          </label>
           <Select value={period} onValueChange={setPeriod}>
             <SelectTrigger className="w-44 bg-card border-border">
               <SelectValue />
@@ -1122,8 +1258,11 @@ export function QuarterlyReportBuilderScreen() {
             </SelectContent>
           </Select>
         </div>
+
         <div>
-          <label className="text-sm font-semibold text-gold mb-3 block">Key Highlights</label>
+          <label className="text-sm font-semibold text-gold mb-3 block">
+            Key Highlights
+          </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
@@ -1131,13 +1270,18 @@ export function QuarterlyReportBuilderScreen() {
             placeholder="Enter key highlights for the report..."
           />
         </div>
+
         <motion.div whileHover={{ scale: 1.05 }}>
-          <Button onClick={() => setShowPreview(true)} className="bg-gold hover:bg-gold-light text-navy shadow-md">
+          <Button
+            onClick={() => setShowPreview(true)}
+            className="bg-gold hover:bg-gold-light text-navy shadow-md"
+          >
             Generate Client Report
           </Button>
         </motion.div>
       </motion.div>
 
+      {/* Preview */}
       <AnimatePresence>
         {showPreview && (
           <motion.div
@@ -1145,7 +1289,10 @@ export function QuarterlyReportBuilderScreen() {
             exit={{ opacity: 0, y: -30, transition: { duration: 0.3 } }}
             className="card-premium p-6 shadow-lg"
           >
-            <h3 className="font-serif text-2xl font-semibold text-gold mb-6">Report Preview</h3>
+            <h3 className="font-serif text-2xl font-semibold text-gold mb-6">
+              Report Preview
+            </h3>
+
             <div className="space-y-5 text-sm">
               <motion.p
                 {...fadeInUp}
@@ -1153,33 +1300,345 @@ export function QuarterlyReportBuilderScreen() {
               >
                 {notes || 'This quarter showed steady progress toward blueprint objectives.'}
               </motion.p>
-              <motion.div {...fadeInUp} className="p-4 rounded-lg bg-navy-muted border border-navy/10">
-                <h4 className="font-semibold text-navy mb-2">Progress vs Blueprint</h4>
-                <p className="text-muted-foreground">On track with minor adjustments recommended.</p>
+
+              <motion.div
+                {...fadeInUp}
+                className="p-4 rounded-lg bg-navy-muted border border-navy/10"
+              >
+                <h4 className="font-semibold text-navy mb-2">
+                  Progress vs Blueprint
+                </h4>
+                <p className="text-muted-foreground">
+                  On track with minor adjustments recommended.
+                </p>
               </motion.div>
-              <motion.div {...fadeInUp} className="p-4 rounded-lg bg-gold-muted/50 border border-gold/20">
+
+              <motion.div
+                {...fadeInUp}
+                className="p-4 rounded-lg bg-gold-muted/50 border border-gold/20"
+              >
                 <h4 className="font-semibold text-gold mb-3">Key Events</h4>
                 <ul className="space-y-2 text-foreground">
-                  <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-gold" />Private Credit allocation initiated</li>
-                  <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-gold" />Quarterly review completed</li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+                    Private Credit allocation initiated
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+                    Quarterly review completed
+                  </li>
                 </ul>
               </motion.div>
-              <motion.div {...fadeInUp} className="p-4 rounded-lg bg-success-muted border border-success/20">
-                <h4 className="font-semibold text-success mb-3">Next Actions</h4>
+
+              <motion.div
+                {...fadeInUp}
+                className="p-4 rounded-lg bg-success-muted border border-success/20"
+              >
+                <h4 className="font-semibold text-success mb-3">
+                  Next Actions
+                </h4>
                 <ul className="space-y-2 text-foreground">
-                  <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-success" />Schedule follow-up review</li>
-                  <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-success" />Review liquidity requirements</li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                    Schedule follow-up review
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                    Review liquidity requirements
+                  </li>
                 </ul>
               </motion.div>
             </div>
+
             <motion.div whileHover={{ scale: 1.05 }}>
-              <Button className="mt-6 bg-gold hover:bg-gold-light text-navy font-semibold" onClick={handlePublish}>
+              <Button
+                className="mt-6 bg-gold hover:bg-gold-light text-navy font-semibold"
+                onClick={handlePublish}
+              >
                 Publish to Client Portal
               </Button>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+    </motion.div>
+  );
+}
+
+export function FADashboardScreen() {
+  const { faRequests, updateFARequestStatus, clients } = useAppStore();
+  const pendingRequests = faRequests.filter((r) => r.status === 'pending');
+  const inProgressRequests = faRequests.filter((r) => r.status === 'pending');
+
+  const handleStartWork = (id: string) => {
+    updateFARequestStatus(id, 'pending');
+    toast.success('Started working on request');
+  };
+
+  const handleMarkReady = (id: string) => {
+    updateFARequestStatus(id, 'ready');
+    toast.success('Marked as ready for RM review');
+  };
+
+  const getClientName = (clientId: string) => {
+    const client = clients.find(c => c.id === clientId);
+    return client?.name || 'Unknown Client';
+  };
+
+  return (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="max-w-4xl mx-auto space-y-10 px-6 py-10"
+    >
+      {/* FA Dashboard Header */}
+      <motion.div variants={itemVariants} className="relative overflow-hidden">
+        <div className="card-elevated p-10 bg-gradient-to-br from-navy/90 via-navy-light/80 to-navy-muted/90 backdrop-blur-xl shadow-2xl border border-gold/20 rounded-3xl">
+          <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-transparent to-gold/5 animate-gradient-x" />
+          <div className="relative flex items-center gap-8">
+            <motion.div 
+              className="h-20 w-20 rounded-3xl bg-gradient-to-br from-gold via-gold-light to-gold-muted flex items-center justify-center shadow-xl border-2 border-gold/30"
+              whileHover={{ scale: 1.08, rotate: 8 }}
+              transition={{ duration: 0.3 }}
+            >
+              <span className="text-navy font-serif text-2xl font-bold">FA</span>
+            </motion.div>
+            <div>
+              <motion.h2 
+                className="font-serif text-4xl font-extrabold text-gold drop-shadow mb-2 tracking-tight"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+              >
+                Financial Advisor Dashboard
+              </motion.h2>
+              <motion.p 
+                className="text-gold-muted text-lg flex items-center gap-2 font-medium"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+              >
+                <Target className="h-4 w-4" />
+                Portfolio Architecture & Strategy
+              </motion.p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Quick Stats */}
+      <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[
+          { label: 'Pending Requests', value: pendingRequests.length.toString(), icon: Clock, color: 'text-amber-500' },
+          { label: 'In Progress', value: inProgressRequests.length.toString(), icon: Activity, color: 'text-blue-500' },
+          { label: 'Completed This Week', value: '5', icon: CheckCircle2, color: 'text-emerald-500' },
+          { label: 'Active Clients', value: clients.length.toString(), icon: Users, color: 'text-purple-500' },
+        ].map((stat, index) => (
+          <motion.div
+            key={stat.label}
+            variants={cardHoverVariants}
+            initial="rest"
+            whileHover="hover"
+            className="card-elevated p-6 cursor-pointer bg-gradient-to-br from-white/60 to-gold/10 border border-gold/10 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
+          >
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-xl bg-gradient-to-br from-gold/20 to-gold/40 shadow ${stat.color}`}>
+                <stat.icon className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-3xl font-extrabold text-navy drop-shadow">{stat.value}</p>
+                <p className="text-xs text-gold font-semibold uppercase tracking-wider">{stat.label}</p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* Requests from RM */}
+      <motion.div variants={itemVariants} className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <Bell className="h-5 w-5 text-gold" />
+            Requests from RM
+          </h3>
+          <motion.span 
+            className="text-sm text-muted-foreground px-3 py-1 bg-muted rounded-full"
+            animate={{ opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            {pendingRequests.length} Pending
+          </motion.span>
+        </div>
+
+        <div className="grid gap-4">
+          <AnimatePresence>
+            {pendingRequests.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="card-elevated p-6 text-center bg-gradient-to-r from-muted/30 to-gold-muted/10"
+              >
+                <p className="text-muted-foreground">No pending requests from RMs</p>
+              </motion.div>
+            ) : (
+              pendingRequests.map((request, index) => (
+                <motion.div
+                  key={request.id}
+                  variants={itemVariants}
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
+                  className="card-elevated p-6 hover:shadow-lg transition-all duration-300 bg-gradient-to-r from-card to-muted/10 border border-border/50 hover:border-gold/30"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <motion.div 
+                        className="h-12 w-12 rounded-2xl bg-gradient-to-br from-navy to-navy-light flex items-center justify-center shadow-lg"
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <FileText className="h-6 w-6 text-gold" />
+                      </motion.div>
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="font-semibold text-foreground text-lg">{request.title}</h3>
+                          <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <StatusChip status={request.status as any} />
+                          </motion.div>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            {getClientName(request.clientId)}
+                          </span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {request.type} Request
+                          </span>
+                          <span>•</span>
+                          <motion.span 
+                            className="flex items-center gap-1 text-amber-600"
+                            animate={{ opacity: [0.7, 1, 0.7] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                          >
+                            <Clock className="h-3 w-3" />
+                            Awaiting FA action
+                          </motion.span>
+                        </div>
+                      </div>
+                    </div>
+                    <motion.div whileHover={{ scale: 1.05 }}>
+                      <Button 
+                        onClick={() => handleStartWork(request.id)}
+                        className="bg-gold hover:bg-gold-light text-navy transition-all duration-300 group"
+                      >
+                        Start Work
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
+                      </Button>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              ))
+            )}
+          
+          </AnimatePresence>
+        </div>
+      </motion.div>
+
+      {/* Work In Progress */}
+      {inProgressRequests.length > 0 && (
+        <motion.div variants={itemVariants} className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <Activity className="h-5 w-5 text-gold" />
+              Work In Progress
+            </h3>
+            <motion.span 
+              className="text-sm text-muted-foreground px-3 py-1 bg-muted rounded-full"
+              animate={{ opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              {inProgressRequests.length} Active
+            </motion.span>
+          </div>
+
+          <div className="grid gap-4">
+            <AnimatePresence>
+              {inProgressRequests.map((request, index) => (
+                <motion.div
+                  key={request.id}
+                  variants={itemVariants}
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
+                  className="card-elevated p-6 hover:shadow-lg transition-all duration-300 bg-gradient-to-r from-blue-50 to-muted/10 border border-blue-200/50 hover:border-gold/30"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <motion.div 
+                        className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg"
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Activity className="h-6 w-6 text-white" />
+                      </motion.div>
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="font-semibold text-foreground text-lg">{request.title}</h3>
+                          <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <StatusChip status={request.status as any} />
+                          </motion.div>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            {getClientName(request.clientId)}
+                          </span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {request.type} Request
+                          </span>
+                          <span>•</span>
+                          <motion.span 
+                            className="flex items-center gap-1 text-blue-600"
+                            animate={{ opacity: [0.7, 1, 0.7] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                          >
+                            <Activity className="h-3 w-3" />
+                            In progress
+                          </motion.span>
+                        </div>
+                      </div>
+                    </div>
+                    <motion.div whileHover={{ scale: 1.05 }}>
+                      <Button 
+                        onClick={() => handleMarkReady(request.id)}
+                        className="bg-emerald-500 hover:bg-emerald-600 text-white transition-all duration-300 group"
+                      >
+                        Mark Ready
+                        <CheckCircle2 className="ml-2 h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+                      </Button>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

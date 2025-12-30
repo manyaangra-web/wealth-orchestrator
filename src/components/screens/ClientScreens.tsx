@@ -2,7 +2,7 @@ import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { StatusChip, ProgressBar } from '@/components/ui/StatusChip';
 import { toast } from 'sonner';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { 
   User, 
@@ -124,6 +124,14 @@ export function ClientHomeScreen() {
   const { selectedClient, getClient, getBlueprint, setCurrentScreen } = useAppStore();
   const client = getClient(selectedClient);
   const blueprint = getBlueprint(selectedClient);
+  const [isSentToClient, setIsSentToClient] = useState(false);
+
+
+  useEffect(() => {
+  setIsSentToClient(
+    JSON.parse(localStorage.getItem('sent_to_client') || 'false')
+  );
+}, []);
 
   const nextActions = selectedClient === 'client-a'
     ? blueprint.status === 'draft'
@@ -195,50 +203,52 @@ export function ClientHomeScreen() {
       </motion.div>
 
       {/* Blueprint Card */}
-      <motion.div 
-        variants={itemVariants}
-        whileHover={{ scale: 1.01, y: -2 }}
-        className="card-elevated p-8 relative overflow-hidden group cursor-pointer"
-        onClick={() => setCurrentScreen('wealth-blueprint')}
+      {isSentToClient && (
+  <motion.div 
+    variants={itemVariants}
+    whileHover={{ scale: 1.01, y: -2 }}
+    className="card-elevated p-8 relative overflow-hidden group cursor-pointer"
+    onClick={() => setCurrentScreen('wealth-blueprint')}
+  >
+    {/* Hover effect */}
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+    
+    <div className="relative flex items-start justify-between mb-6">
+      <div className="flex items-center gap-4">
+        <div className="p-3 rounded-xl bg-gradient-to-br from-navy/20 to-gold/20">
+          <MapPin className="w-6 h-6 text-gold" />
+        </div>
+        <div>
+          <h3 className="font-serif text-xl font-semibold text-foreground mb-1">
+            Your Wealth Blueprint
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            A living plan aligned to your goals
+          </p>
+        </div>
+      </div>
+      <StatusChip status={blueprint.status} />
+    </div>
+    
+    <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+      Your personalized wealth orchestration plan. Updated annually or when life changes occur.
+      Track progress and milestones toward your financial objectives.
+    </p>
+    
+    <div className="flex items-center justify-between">
+      <Button 
+        className="bg-gradient-to-r from-navy to-navy-light hover:from-navy-light hover:to-navy text-gold font-semibold group-hover:scale-105 transition-transform duration-200"
       >
-        {/* Hover effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-        
-        <div className="relative flex items-start justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-navy/20 to-gold/20">
-              <MapPin className="w-6 h-6 text-gold" />
-            </div>
-            <div>
-              <h3 className="font-serif text-xl font-semibold text-foreground mb-1">
-                Your Wealth Blueprint
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                A living plan aligned to your goals
-              </p>
-            </div>
-          </div>
-          <StatusChip status={blueprint.status} />
-        </div>
-        
-        <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-          Your personalized wealth orchestration plan. Updated annually or when life changes occur.
-          Track progress and milestones toward your financial objectives.
-        </p>
-        
-        <div className="flex items-center justify-between">
-          <Button 
-            className="bg-gradient-to-r from-navy to-navy-light hover:from-navy-light hover:to-navy text-gold font-semibold group-hover:scale-105 transition-transform duration-200"
-          >
-            View Blueprint
-            <ArrowRight className="ml-2 w-4 h-4" />
-          </Button>
-          
-          <div className="text-xs text-muted-foreground">
-            Updated {blueprint.status === 'draft' ? 'Draft' : 'Recently'}
-          </div>
-        </div>
-      </motion.div>
+        View Blueprint
+        <ArrowRight className="ml-2 w-4 h-4" />
+      </Button>
+      
+      <div className="text-xs text-muted-foreground">
+        Updated {blueprint.status === 'draft' ? 'Draft' : 'Recently'}
+      </div>
+    </div>
+  </motion.div>
+)}
 
       {/* Next Actions Card */}
       <motion.div 
@@ -325,9 +335,13 @@ export function WealthBlueprintScreen() {
   const blueprint = getBlueprint(selectedClient);
 
   const handleApprove = () => {
-    updateBlueprintStatus(selectedClient, 'active');
-    toast.success('Blueprint approved. Recommendations are now available.');
-  };
+  updateBlueprintStatus(selectedClient, 'active');
+
+  // ✅ Save approval flag
+  localStorage.setItem('approve_blueprint', JSON.stringify(true));
+
+  toast.success('Blueprint approved. Recommendations are now available.');
+};
 
   return (
     <motion.div 
@@ -496,9 +510,13 @@ export function ClientRecommendationsScreen() {
   const blueprint = getBlueprint(selectedClient);
 
   const handleApprove = (id: string) => {
-    updateRecommendationStatus(id, 'client-approved');
-    toast.success('Recommendation approved for execution.');
-  };
+  updateRecommendationStatus(id, 'client-approved');
+
+  // ✅ Save approval flag
+  localStorage.setItem('Approve_Recommendation', JSON.stringify(true));
+
+  toast.success('Recommendation approved for execution.');
+};
 
   return (
     <motion.div 
@@ -932,36 +950,56 @@ export function PortfolioOverviewScreen() {
     </motion.div>
   );
 }
+type QuarterlyReport = {
+  id: string;
+  period: string;
+  notes: string;
+  publishedAt: string;
+};
 
 export function ReportsScreen() {
   const [previewOpen, setPreviewOpen] = useState<string | null>(null);
+  const [reports, setReports] = useState<QuarterlyReport[]>([]);
 
-  const reports = [
-    { id: 'q1-2026', title: 'Quarterly Wealth Summary — Q1 2026', date: 'Mar 2026', status: 'Latest' },
-    { id: 'q4-2025', title: 'Quarterly Wealth Summary — Q4 2025', date: 'Dec 2025', status: 'Previous' },
-  ];
+  // 🔹 Load reports from localStorage
+  useEffect(() => {
+    const storedReports = JSON.parse(
+      localStorage.getItem('quarterly_reports') || '[]'
+    );
+
+    // Sort latest first
+    const sorted = storedReports.sort(
+      (a: QuarterlyReport, b: QuarterlyReport) =>
+        new Date(b.publishedAt).getTime() -
+        new Date(a.publishedAt).getTime()
+    );
+
+    setReports(sorted);
+  }, []);
+
+  const activeReport = reports.find((r) => r.id === previewOpen);
 
   return (
-    <motion.div 
+    <motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="max-w-4xl mx-auto space-y-8 px-4 py-8 flex flex-col items-center"
+      className="max-w-4xl mx-auto space-y-8 px-4 py-8"
     >
-      {/* Header Section */}
-      <motion.div 
+      {/* Header */}
+      <motion.div
         variants={scaleVariants}
-        className="card-premium p-8 bg-gradient-to-br from-navy/5 via-gold/5 to-navy/5 relative overflow-hidden w-full"
+        className="card-premium p-8 bg-gradient-to-br from-navy/5 via-gold/5 to-navy/5 relative overflow-hidden"
       >
         <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-navy/10 rounded-full blur-2xl" />
-        
+
         <div className="relative flex items-center gap-4 mb-4">
           <div className="p-3 rounded-xl bg-gradient-to-br from-gold/20 to-navy/20">
             <FileText className="w-8 h-8 text-gold" />
           </div>
           <div>
-            <h2 className="font-serif text-3xl font-bold text-foreground mb-2">
+            <h2 className="font-serif text-3xl font-bold text-foreground">
               Wealth Reports
             </h2>
             <p className="text-muted-foreground">
@@ -969,72 +1007,55 @@ export function ReportsScreen() {
             </p>
           </div>
         </div>
-        
-        <motion.p 
-          variants={itemVariants}
-          className="text-sm text-muted-foreground leading-relaxed relative z-10"
-        >
-          Detailed quarterly reports that summarize progress against your blueprint, 
-          key market events, and personalized next actions for your wealth journey.
-        </motion.p>
       </motion.div>
 
+      {/* Empty State */}
+      {reports.length === 0 && (
+        <motion.div
+          variants={itemVariants}
+          className="card-premium p-10 text-center"
+        >
+          <p className="text-muted-foreground text-lg">
+            No reports available yet.
+          </p>
+        </motion.div>
+      )}
+
       {/* Reports List */}
-      <motion.div variants={containerVariants} className="space-y-6 w-full">
+      <motion.div variants={containerVariants} className="space-y-6">
         {reports.map((report, idx) => (
-          <motion.div 
+          <motion.div
             key={report.id}
             variants={itemVariants}
             whileHover={{ scale: 1.01, y: -4 }}
-            className="card-elevated p-8 relative overflow-hidden group bg-gradient-to-br from-card via-card/95 to-muted/30 hover:shadow-2xl transition-all duration-500"
+            className="card-elevated p-8 relative overflow-hidden group"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-            
+
             <div className="relative flex items-center justify-between">
               <div className="flex items-center gap-6">
-                <motion.div 
-                  whileHover={{ rotate: 5, scale: 1.1 }}
-                  className="h-16 w-16 rounded-xl bg-gradient-to-br from-navy-muted to-gold-muted/30 flex items-center justify-center shadow-lg"
-                >
-                  <FileText className="w-8 h-8 text-navy font-bold" />
-                </motion.div>
-                
+                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-navy-muted to-gold-muted/30 flex items-center justify-center">
+                  <FileText className="w-8 h-8 text-navy" />
+                </div>
+
                 <div>
-                  <h3 className="font-serif text-xl font-bold text-foreground mb-1 group-hover:text-navy transition-colors duration-300">
-                    {report.title}
+                  <h3 className="font-serif text-xl font-bold text-foreground">
+                    Quarterly Wealth Summary — {report.period.toUpperCase()}
                   </h3>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">{report.date}</span>
-                    </div>
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        report.status === 'Latest' 
-                          ? 'bg-gold/20 text-gold border border-gold/30' 
-                          : 'bg-muted text-muted-foreground border border-border'
-                      }`}
-                    >
-                      {report.status}
-                    </motion.div>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <Calendar className="w-4 h-4" />
+                    {new Date(report.publishedAt).toLocaleDateString()}
                   </div>
                 </div>
               </div>
-              
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+
+              <Button
+                variant="outline"
+                onClick={() => setPreviewOpen(report.id)}
+                className="border-navy/30 text-navy hover:bg-navy-muted"
               >
-                <Button 
-                  variant="outline" 
-                  onClick={() => setPreviewOpen(report.id)} 
-                  className="border-navy/30 text-navy hover:bg-navy-muted hover:border-gold/50 hover:text-gold transition-all duration-300 px-6 py-3"
-                >
-                  <FileText className="mr-2 w-4 h-4" />
-                  Preview Report
-                </Button>
-              </motion.div>
+                Preview Report
+              </Button>
             </div>
           </motion.div>
         ))}
@@ -1042,122 +1063,60 @@ export function ReportsScreen() {
 
       {/* Preview Modal */}
       <AnimatePresence>
-        {previewOpen && (
-          <motion.div 
+        {previewOpen && activeReport && (
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-navy/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
             onClick={() => setPreviewOpen(null)}
           >
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-card rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl border border-border"
+              className="bg-card rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
             >
-              <div className="flex items-center gap-4 mb-6">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-navy/20 to-gold/20">
-                  <FileText className="w-6 h-6 text-gold" />
+              <h3 className="font-serif text-2xl font-semibold mb-4">
+                Quarterly Wealth Summary — {activeReport.period.toUpperCase()}
+              </h3>
+
+              <p className="text-muted-foreground mb-6 leading-relaxed">
+                {activeReport.notes ||
+                  'This quarter showed steady progress toward your financial goals.'}
+              </p>
+
+              <div className="space-y-4">
+                <div className="p-4 rounded-lg bg-navy-muted">
+                  <h4 className="font-semibold text-navy mb-2">
+                    Progress vs Blueprint
+                  </h4>
+                  <p className="text-muted-foreground">
+                    On track with minor adjustments recommended.
+                  </p>
                 </div>
-                <h3 className="font-serif text-2xl font-semibold text-foreground">
-                  Quarterly Wealth Summary — {previewOpen === 'q1-2026' ? 'Q1 2026' : 'Q4 2025'}
-                </h3>
-              </div>
-              
-              <div className="space-y-6 text-sm">
-                <motion.p 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="text-muted-foreground leading-relaxed"
-                >
-                  This quarter showed steady progress toward your blueprint objectives. Key allocations remain on track with minor adjustments recommended for optimal performance.
-                </motion.p>
-                
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="p-6 rounded-xl bg-gradient-to-br from-navy-muted to-navy-muted/50 border border-navy/20"
-                >
-                  <div className="flex items-center gap-2 mb-4">
-                    <CheckCircle className="w-5 h-5 text-gold" />
-                    <h4 className="font-bold text-navy">Key Changes This Quarter</h4>
-                  </div>
-                  <ul className="space-y-3 text-foreground">
-                    {[
-                      'Private Credit allocation initiated with $2M commitment',
-                      'Portfolio rebalancing completed ahead of schedule', 
-                      'Risk assessment updated reflecting market conditions'
-                    ].map((item, idx) => (
-                      <motion.li 
-                        key={idx}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 + idx * 0.1 }}
-                        className="flex items-start gap-3"
-                      >
-                        <span className="h-2 w-2 rounded-full bg-gold mt-2 flex-shrink-0" />
-                        {item}
-                      </motion.li>
-                    ))}
+
+                <div className="p-4 rounded-lg bg-gold-muted/50">
+                  <h4 className="font-semibold text-gold mb-2">
+                    Recommended Next Actions
+                  </h4>
+                  <ul className="list-disc list-inside text-sm">
+                    <li>Schedule follow-up review</li>
+                    <li>Review liquidity requirements</li>
                   </ul>
-                </motion.div>
-                
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="p-6 rounded-xl bg-gradient-to-br from-gold-muted to-gold-muted/50 border border-gold/30"
-                >
-                  <div className="flex items-center gap-2 mb-4">
-                    <Target className="w-5 h-5 text-gold" />
-                    <h4 className="font-bold text-gold">Recommended Next Actions</h4>
-                  </div>
-                  <ul className="space-y-3 text-foreground">
-                    {[
-                      'Schedule quarterly review meeting with your RM',
-                      'Review upcoming liquidity events and tax implications',
-                      'Consider additional diversification opportunities'
-                    ].map((item, idx) => (
-                      <motion.li 
-                        key={idx}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5 + idx * 0.1 }}
-                        className="flex items-start gap-3"
-                      >
-                        <span className="h-2 w-2 rounded-full bg-navy mt-2 flex-shrink-0" />
-                        {item}
-                      </motion.li>
-                    ))}
-                  </ul>
-                </motion.div>
+                </div>
               </div>
-              
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="mt-8 flex gap-4"
-              >
-                <Button 
-                  className="bg-gradient-to-r from-navy to-navy-light hover:from-navy-light hover:to-navy text-gold font-semibold flex-1"
+
+              <div className="mt-6 flex gap-4">
+                <Button
+                  className="flex-1 bg-navy text-gold"
                   onClick={() => setPreviewOpen(null)}
                 >
-                  <CheckCircle className="mr-2 w-4 h-4" />
                   Close Preview
                 </Button>
-                <Button 
-                  variant="outline"
-                  className="border-gold/40 text-gold hover:bg-gold/10"
-                >
-                  <ArrowRight className="mr-2 w-4 h-4" />
-                  Download PDF
-                </Button>
-              </motion.div>
+                <Button variant="outline">Download PDF</Button>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -1165,6 +1124,7 @@ export function ReportsScreen() {
     </motion.div>
   );
 }
+
 
 export function SecureMessagingScreen() {
   const { selectedClient, messages, addMessage } = useAppStore();

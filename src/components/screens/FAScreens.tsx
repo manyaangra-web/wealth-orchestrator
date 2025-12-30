@@ -113,12 +113,50 @@ export function BlueprintBuilderScreen() {
   const [passiveIncome, setPassiveIncome] = useState(blueprint.passiveIncomeTarget || '');
 
   const handleSubmit = () => {
-    const req = faRequests.find((r) => r.clientId === selectedClient && r.type === 'blueprint' && r.status === 'pending');
-    if (req) {
-      updateFARequestStatus(req.id, 'ready');
-    }
-    toast.success('Blueprint Draft submitted');
+  // Save blueprint data to localStorage
+  const blueprintData = {
+    clientId: selectedClient,
+    clientName: client.name,
+    scenario,
+    allocations,
+    milestoneNotes,
+    passiveIncome,
+    timestamp: new Date().toISOString(),
+    version: 'v1'
   };
+
+  const existingBlueprints = JSON.parse(
+    localStorage.getItem('blueprintDrafts') || '[]'
+  );
+
+  const existingIndex = existingBlueprints.findIndex(
+    (bp: any) => bp.clientId === selectedClient
+  );
+
+  if (existingIndex !== -1) {
+    existingBlueprints[existingIndex] = blueprintData;
+  } else {
+    existingBlueprints.push(blueprintData);
+  }
+
+  localStorage.setItem('blueprintDrafts', JSON.stringify(existingBlueprints));
+
+  // ✅ SET FLAG
+  localStorage.setItem('Submit_Blueprint_Draft', JSON.stringify(true));
+
+  const req = faRequests.find(
+    (r) =>
+      r.clientId === selectedClient &&
+      r.type === 'blueprint' &&
+      r.status === 'pending'
+  );
+
+  if (req) {
+    updateFARequestStatus(req.id, 'ready');
+  }
+
+  toast.success('Blueprint Draft submitted and saved');
+};
 
   return (
     <motion.div
@@ -411,12 +449,22 @@ export function RecommendationDraftsScreen() {
   const recommendations = getClientRecommendations(selectedClient);
 
   const handleSubmit = () => {
-    const req = faRequests.find((r) => r.clientId === selectedClient && r.type === 'recommendation' && r.status === 'pending');
-    if (req) {
-      updateFARequestStatus(req.id, 'ready');
-    }
-    toast.success('Recommendation Draft submitted');
-  };
+  const req = faRequests.find(
+    (r) =>
+      r.clientId === selectedClient &&
+      r.type === 'recommendation' &&
+      r.status === 'pending'
+  );
+
+  if (req) {
+    updateFARequestStatus(req.id, 'ready');
+  }
+
+  // ✅ Save flag in localStorage
+  localStorage.setItem('Submit_Recommendation_Draft', JSON.stringify(true));
+
+  toast.success('Recommendation Draft submitted');
+};
 
   return (
     <motion.div

@@ -326,11 +326,15 @@ const defaultMessages: Message[] = [
   },
 ];
 
-const defaultFARequests: FARequest[] = [
-  { id: 'fa-1', clientId: 'client-a', type: 'blueprint', status: 'pending', title: 'Blueprint Draft requested by RM' },
-  { id: 'fa-2', clientId: 'client-b', type: 'structuring', status: 'pending', title: 'Structuring Guidance requested by RM' },
-  { id: 'fa-3', clientId: 'client-a', type: 'recommendation', status: 'pending', title: 'Recommendation Draft due' },
-];
+// const defaultFARequests: FARequest[] = [
+//   { id: 'fa-1', clientId: 'client-a', type: 'blueprint', status: 'pending', title: 'Blueprint Draft requested by RM' },
+//   { id: 'fa-2', clientId: 'client-b', type: 'structuring', status: 'pending', title: 'Structuring Guidance requested by RM' },
+//   { id: 'fa-3', clientId: 'client-a', type: 'recommendation', status: 'pending', title: 'Recommendation Draft due' },
+// ];
+
+
+const defaultFARequests: FARequest[] = [];
+
 
 interface AppState {
   // Current selections
