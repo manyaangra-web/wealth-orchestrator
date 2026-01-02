@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import { LoginScreen } from "./components/screens/Login";
 import { SignUpScreen } from "./components/screens/SignUp";
 import { ForgotPasswordScreen } from "./components/screens/ForgotPassword";
+import PremiumToastDemo from "./pages/PremiumToastDemo";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/signup" element={<SignUpScreen />} />
           <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
+          <Route path="/premium-toast" element={<PremiumToastDemo />} />
           <Route path="/" element={<Index />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

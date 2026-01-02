@@ -340,7 +340,19 @@ export function WealthBlueprintScreen() {
   // ✅ Save approval flag
   localStorage.setItem('approve_blueprint', JSON.stringify(true));
 
-  toast.success('Blueprint approved. Recommendations are now available.');
+  // Show PremiumToast modal for blueprint approval
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent('premium-toast', {
+        detail: {
+          title: 'Blueprint Approved',
+          message: 'Blueprint approved. Recommendations are now available.',
+          icon: 'CheckCircle',
+          status: 'success',
+        },
+      })
+    );
+  }
 };
 
   return (
@@ -515,7 +527,19 @@ export function ClientRecommendationsScreen() {
   // ✅ Save approval flag
   localStorage.setItem('Approve_Recommendation', JSON.stringify(true));
 
-  toast.success('Recommendation approved for execution.');
+  // Show PremiumToast modal for approval
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent('premium-toast', {
+        detail: {
+          title: 'Recommendation Approved',
+          message: 'Recommendation approved for execution.',
+          icon: 'CheckCircle',
+          status: 'success',
+        },
+      })
+    );
+  }
 };
 
   return (

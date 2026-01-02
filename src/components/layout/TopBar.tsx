@@ -248,7 +248,10 @@ export function TopBar() {
                 <Select value={currentRole} onValueChange={(v) => setCurrentRole(v as UserRole)}>
                   <SelectTrigger className="w-[160px] lg:w-[200px] h-9 text-xs lg:text-sm bg-navy-light/40 border-navy-light/40 text-gold-light hover:bg-navy-light/60 hover:border-gold/40 transition-all duration-300 backdrop-blur-sm">
                     <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${roleColors[currentRole]}`} />
+                      {/* Remove colored dot for all roles */}
+                      {false && (
+                        <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${roleColors[currentRole]}`} />
+                      )}
                       <SelectValue />
                     </div>
                   </SelectTrigger>
@@ -262,6 +265,10 @@ export function TopBar() {
                           className="text-gold-light hover:bg-navy-light/60 focus:bg-navy-light/60 focus:text-gold transition-colors duration-200"
                         >
                           <div className="flex items-center gap-2">
+                            {/* Remove colored dot for all roles */}
+                            {false && (
+                              <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${roleColors[role as UserRole]}`} />
+                            )}
                             <Icon className="w-3 h-3 opacity-70" />
                             {label}
                           </div>

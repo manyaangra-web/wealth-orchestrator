@@ -1,5 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
+@layer utilities {
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .animate-toast-in {
+    animation: toastIn 0.32s cubic-bezier(0.4,0,0.2,1);
+  }
+  @keyframes tickPop {
+    0% { transform: scale(0.7); opacity: 0; }
+    60% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .animate-tick-pop {
+    animation: tickPop 0.38s cubic-bezier(0.4,0,0.2,1);
+  }
+  .drop-shadow-green {
+    filter: drop-shadow(0 2px 6px #22c55e33);
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

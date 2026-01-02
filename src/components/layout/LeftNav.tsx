@@ -270,7 +270,7 @@ export function LeftNav() {
                                   repeat: Infinity,
                                   ease: "easeInOut"
                                 }}
-                                className="w-2 h-2 rounded-full bg-gold shadow-lg"
+                                
                               />
                             )}
                           </div>

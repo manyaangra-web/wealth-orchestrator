@@ -56,24 +56,6 @@ export function LandingScreen() {
 
   return (
     <div ref={containerRef} className="max-w-6xl mx-auto py-20 lg:py-32 px-6 relative overflow-hidden">
-      {/* Animated Investment SVGs */}
-      <div className="absolute top-8 left-8 w-32 h-32 z-0 pointer-events-none animate-bounce-slow">
-        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="50" cy="80" rx="30" ry="8" fill="#FFD700" opacity="0.7" />
-          <rect x="35" y="60" width="30" height="20" rx="8" fill="#FFD700" stroke="#bfa100" strokeWidth="2" />
-          <rect x="38" y="50" width="24" height="12" rx="6" fill="#FFF8DC" stroke="#bfa100" strokeWidth="1.5" />
-          <path d="M50 60 L50 30 M50 30 L45 35 M50 30 L55 35" stroke="#22c55e" strokeWidth="3" strokeLinecap="round" />
-        </svg>
-      </div>
-      <div className="absolute bottom-8 right-8 w-40 h-40 z-0 pointer-events-none animate-spin-slow">
-        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="20" y="60" width="10" height="20" fill="#0ea5e9" rx="2" />
-          <rect x="35" y="50" width="10" height="30" fill="#38bdf8" rx="2" />
-          <rect x="50" y="40" width="10" height="40" fill="#22c55e" rx="2" />
-          <rect x="65" y="30" width="10" height="50" fill="#FFD700" rx="2" />
-          <text x="80" y="90" fontSize="24" fill="#FFD700" fontWeight="bold">$</text>
-        </svg>
-      </div>
       {/* Enhanced Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-gold/10 via-navy/5 to-white/10 pointer-events-none" />
       <div className="absolute top-10 right-10 w-80 h-80 bg-gold/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
@@ -91,11 +73,7 @@ export function LandingScreen() {
           variants={itemVariants}
           className="inline-flex items-center gap-4 px-8 py-4 rounded-full bg-gradient-to-r from-gold-muted to-navy-muted border-2 border-gold/40 mb-12 backdrop-blur-lg shadow-2xl"
         >
-          <motion.span 
-            className="h-4 w-4 rounded-full bg-gold animate-pulse"
-            animate={{ scale: [1, 1.4, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
+     
           <span className="text-lg font-bold bg-gradient-to-r from-gold to-navy bg-clip-text text-transparent tracking-wide uppercase">
             Wealth Orchestration Platform
           </span>
@@ -103,7 +81,7 @@ export function LandingScreen() {
 
         <motion.h1 
           variants={itemVariants}
-          className="font-serif text-7xl lg:text-9xl font-extrabold text-foreground mb-12 leading-tight drop-shadow-2xl"
+          className="font-serif text-5xl lg:text-5xl font-bold text-foreground mb-12 leading-tight drop-shadow-2xl"
         >
           Your global wealth,{' '}
           <span className="bg-gradient-to-r from-gold via-navy to-gold bg-clip-text text-transparent animate-gradient-x">
@@ -113,7 +91,7 @@ export function LandingScreen() {
 
         <motion.p 
           variants={itemVariants}
-          className="text-3xl lg:text-4xl text-muted-foreground max-w-5xl mx-auto mb-16 leading-relaxed font-light"
+          className="text-3xl lg:text-2xl text-muted-foreground max-w-5xl mx-auto mb-16 leading-relaxed font-light"
         >
           MULTIFLY is a relationship-led wealth orchestration platform: one RM, a living blueprint, 
           curated opportunities, and partner-executed investing.
@@ -126,7 +104,7 @@ export function LandingScreen() {
           <Button 
             onClick={() => setCurrentScreen('how-it-works')} 
             size="lg"
-            className="group bg-gradient-to-r from-navy to-navy-light hover:from-navy-light hover:to-navy text-gold px-16 py-6 text-2xl font-bold shadow-3xl hover:shadow-4xl transition-all duration-300 rounded-3xl"
+            className="group bg-gradient-to-r from-navy to-navy-light hover:from-navy-light hover:to-navy text-gold px-16 py-6 text-2xl font-bold shadow-3xl hover:shadow-4xl transition-all duration-300 rounded-2xl"
           >
             View How Multifly Works
             <ArrowRight className="ml-5 h-7 w-7 group-hover:translate-x-2 transition-transform duration-300" />
@@ -138,7 +116,7 @@ export function LandingScreen() {
               setCurrentRole('rm');
               setCurrentScreen('rm-dashboard');
             }}
-            className="group border-2 border-navy/40 text-navy hover:bg-navy hover:text-gold px-16 py-6 text-2xl font-bold rounded-3xl transition-all duration-300"
+            className="group border-2 border-navy/40 text-navy hover:bg-navy hover:text-gold px-16 py-6 text-2xl font-bold rounded-2xl transition-all duration-300"
           >
             Explore the Product
             <Zap className="ml-5 h-7 w-7 group-hover:rotate-12 transition-transform duration-300" />
@@ -270,17 +248,7 @@ export function WhyMultiflyScreen() {
   return (
     <div ref={containerRef} className="max-w-5xl mx-auto py-16 px-4">
       {/* Animated Investment Icons */}
-      <div className="flex justify-center gap-8 mb-10">
-        <motion.span animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2 }}>
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#FFD700" strokeWidth="4" /><text x="12" y="27" fontSize="18" fill="#FFD700" fontWeight="bold">$</text></svg>
-        </motion.span>
-        <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="10" y="20" width="8" height="16" fill="#22c55e" /><rect x="22" y="10" width="8" height="26" fill="#0ea5e9" /><rect x="34" y="5" width="4" height="31" fill="#FFD700" /></svg>
-        </motion.span>
-        <motion.span animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 1.2 }}>
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="32" rx="14" ry="6" fill="#FFF8DC" /><rect x="14" y="16" width="12" height="16" rx="4" fill="#FFD700" stroke="#bfa100" strokeWidth="2" /><path d="M20 16 L20 8 M20 8 L16 12 M20 8 L24 12" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" /></svg>
-        </motion.span>
-      </div>
+  
             {/* FAQ Section */}
             <div className="max-w-3xl mx-auto my-16">
               <h2 className="text-4xl font-extrabold text-center mb-10 bg-gradient-to-r from-navy to-gold bg-clip-text text-transparent tracking-tight drop-shadow-lg">Frequently Asked Questions</h2>
