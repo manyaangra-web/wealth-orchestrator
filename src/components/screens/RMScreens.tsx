@@ -332,9 +332,17 @@ export function Client360Screen() {
   const [isBlueprintSubmitted, setIsBlueprintSubmitted] = useState(false);
   const [isRecommendationDraftSubmitted, setIsRecommendationDraftSubmitted] =
   useState(false);
+  const [isSentToClient, setIsSentToClient] = useState<boolean>(() => {
+  try {
+    return JSON.parse(localStorage.getItem('sent_to_client') || 'false');
+  } catch {
+    return false;
+  }
+});
 
   const handleSendToClient = () => {
   localStorage.setItem('sent_to_client', JSON.stringify(true));
+  setIsSentToClient(true);
   toast.success('Blueprint shared with client');
 };
 useEffect(() => {
@@ -492,18 +500,20 @@ useEffect(() => {
           <StatusChip status={blueprint.status} />
         </motion.div>
 
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Button
-            onClick={handleSendToClient}
-            className="bg-navy hover:bg-navy-light text-gold transition-all duration-300"
-          >
-            Send to Client
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </motion.div>
+       {!isSentToClient && (
+  <motion.div
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+  >
+    <Button
+      onClick={handleSendToClient}
+      className="bg-navy hover:bg-navy-light text-gold transition-all duration-300"
+    >
+      Send to Client
+      <ArrowRight className="ml-2 h-4 w-4" />
+    </Button>
+  </motion.div>
+)}
       </div>
 
       <div className="space-y-4">

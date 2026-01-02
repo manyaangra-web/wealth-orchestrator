@@ -37,8 +37,6 @@ import {
 import {
   CountryCatalogScreen,
   EligibilityRulesScreen,
-  PartnerProfilesScreen,
-  TemplateLibraryScreen,
 } from '@/components/screens/AdminScreens';
 
 const Index = () => {
@@ -82,8 +80,6 @@ const Index = () => {
       // Admin
       case 'country-catalog': return <CountryCatalogScreen />;
       case 'eligibility-rules': return <EligibilityRulesScreen />;
-      case 'partner-profiles': return <PartnerProfilesScreen />;
-      case 'template-library': return <TemplateLibraryScreen />;
       default: return <LandingScreen />;
     }
   };
