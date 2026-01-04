@@ -123,6 +123,7 @@ export function BlueprintBuilderScreen() {
   const [milestoneNotes, setMilestoneNotes] = useState<Record<string, string>>({});
   const [passiveIncome, setPassiveIncome] = useState(blueprint.passiveIncomeTarget || '');
   const [showPremiumToast, setShowPremiumToast] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleSubmit = () => {
     // Save blueprint data to localStorage
@@ -167,8 +168,186 @@ export function BlueprintBuilderScreen() {
       updateFARequestStatus(req.id, 'ready');
     }
 
-    setShowPremiumToast(true);
+    setShowSuccessModal(true);
+    
+    // Close modal after 1 second
+    setTimeout(() => {
+      setShowSuccessModal(false);
+    }, 1000);
   };
+  
+  return (
+    <>
+      <AnimatePresence>
+        {showSuccessModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-4"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
+              >
+                <CheckCircle2 className="h-16 w-16 text-emerald-500" />
+              </motion.div>
+              <h3 className="text-xl font-semibold text-navy">Draft Submitted Successfully</h3>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.div
+        {...fadeInUp}
+        className="max-w-2xl mx-auto space-y-8 px-4"
+      >
+        {/* Header */}
+        <motion.div
+          {...fadeInUp}
+          className="card-elevated p-6 bg-gradient-to-br from-navy via-navy-light to-navy-muted shadow-lg"
+        >
+          <div className="flex items-center gap-4">
+            <motion.div
+              className="h-12 w-12 rounded-2xl bg-gradient-to-br from-gold to-gold-light flex items-center justify-center shadow"
+              whileHover={{ scale: 1.08, rotate: 5 }}
+              transition={{ duration: 0.3 }}
+            >
+              <span className="text-navy font-bold text-xl">{client.name.charAt(0)}</span>
+            </motion.div>
+            <div>
+              <h2 className="font-serif text-2xl font-semibold text-gold">Blueprint v1 — {client.name}</h2>
+              <p className="text-sm text-gold-muted">Draft and adjust client blueprint</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Allocation Targets */}
+        <motion.div
+          {...fadeInUp}
+          className="card-premium p-6 space-y-5 gold-accent-animated shadow"
+        >
+          <h3 className="font-semibold text-gold text-lg mb-2">Allocation Targets</h3>
+          {allocations.map((alloc, idx) => (
+            <motion.div
+              key={idx}
+              {...fadeInUp}
+              variants={cardHover}
+              initial="rest"
+              whileHover="hover"
+              className="space-y-3 p-4 rounded-xl bg-gradient-to-r from-navy-muted/20 to-gold-muted/10 border border-gold/10 transition-all"
+            >
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-foreground font-medium">{alloc.name}</span>
+                <span className="font-bold text-navy">{alloc.percentage}%</span>
+              </div>
+              <Slider
+                value={[alloc.percentage]}
+                onValueChange={(v) => {
+                  const newAllocs = [...allocations];
+                  newAllocs[idx].percentage = v[0];
+                  setAllocations(newAllocs);
+                }}
+                max={100}
+                step={5}
+                className="[&_[role=slider]]:bg-gold [&_[role=slider]]:border-gold [&_.bg-primary]:bg-gradient-to-r [&_.bg-primary]:from-gold [&_.bg-primary]:to-gold-light"
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Scenario Toggle */}
+        <motion.div
+          {...fadeInUp}
+          className="card-elevated p-6 shadow bg-gradient-to-br from-navy-muted/30 to-gold-muted/10"
+        >
+          <h3 className="font-semibold text-navy text-lg mb-4">Scenario</h3>
+          <div className="flex gap-2">
+            {['Base', 'Bull', 'Bear'].map((s) => (
+              <motion.button
+                key={s}
+                type="button"
+                onClick={() => setScenario(s.toLowerCase())}
+                className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                  scenario === s.toLowerCase()
+                    ? 'bg-gold text-navy shadow scale-105'
+                    : 'bg-card text-foreground border border-border hover:bg-gold/10'
+                }`}
+                whileHover={{ scale: scenario === s.toLowerCase() ? 1.08 : 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                {s}
+              </motion.button>
+            ))}
+          </div>
+          <motion.p
+            {...fadeInUp}
+            className="text-sm text-muted-foreground mt-4 p-3 rounded-lg bg-muted/30"
+          >
+            {scenario === 'base' && 'Base case assumes moderate growth and stable markets.'}
+            {scenario === 'bull' && 'Bull case assumes strong growth and favorable conditions.'}
+            {scenario === 'bear' && 'Bear case assumes market downturns and conservative returns.'}
+          </motion.p>
+        </motion.div>
+
+        {/* Milestone Notes */}
+        <motion.div
+          {...fadeInUp}
+          className="card-premium p-6 space-y-5 gold-accent-animated shadow"
+        >
+          <h3 className="font-semibold text-gold text-lg">Milestone Notes</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {['Now', '5Y', '10Y', 'Legacy'].map((period, i) => (
+              <motion.div
+                key={period}
+                {...fadeInUp}
+                transition={{ delay: i * 0.05, duration: 0.4 }}
+                className="flex flex-col gap-2"
+              >
+                <label className="text-xs text-gold font-semibold uppercase tracking-wide">{period}</label>
+                <input
+                  type="text"
+                  value={milestoneNotes[period] || ''}
+                  onChange={(e) => setMilestoneNotes({ ...milestoneNotes, [period]: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl border border-gold/30 bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold/50 transition-all"
+                  placeholder={`Notes for ${period}...`}
+                />
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Passive Income Target */}
+        <motion.div
+          {...fadeInUp}
+          className="card-elevated p-6 shadow bg-gradient-to-br from-navy-muted/20 to-gold-muted/10"
+        >
+          <label className="font-semibold text-navy text-lg block mb-3">Passive Income Target</label>
+          <input
+            type="text"
+            value={passiveIncome}
+            onChange={(e) => setPassiveIncome(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-gold/30 bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold/50 transition-all"
+            placeholder="e.g., USD 240K/year"
+          />
+        </motion.div>
+
+        <motion.div whileHover={{ scale: 1.05 }}>
+          <Button onClick={handleSubmit} className="bg-gold hover:bg-gold-light text-navy font-semibold shadow">
+            Submit Blueprint Draft
+          </Button>
+        </motion.div>
+      </motion.div>
+    </>
+  );
 }
 
 export function RecommendationDraftsScreen() {

@@ -69,6 +69,13 @@ const screenTitles: Record<string, string> = {
   'template-library': 'Template Library',
 };
 
+const roleFirstScreens: Record<UserRole, string> = {
+  client: 'client-home',
+  rm: 'rm-dashboard',
+  fa: 'fa-dashboard',
+  admin: 'country-catalog',
+};
+
 export function TopBar() {
   const {
     currentRole,
@@ -84,6 +91,7 @@ export function TopBar() {
   const navigate = useNavigate();
   const [isResetting, setIsResetting] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [previousRole, setPreviousRole] = useState<UserRole>(currentRole);
 
   // Check for access token on component mount and whenever localStorage changes
   useEffect(() => {
@@ -105,6 +113,15 @@ export function TopBar() {
       window.removeEventListener('authStateChanged', checkAuthToken);
     };
   }, []);
+
+  // Auto-navigate to first screen when role changes
+  useEffect(() => {
+    if (previousRole !== currentRole) {
+      const firstScreen = roleFirstScreens[currentRole];
+      setCurrentScreen(firstScreen);
+      setPreviousRole(currentRole);
+    }
+  }, [currentRole, setCurrentScreen]);
 
   const handleReset = async () => {
     setIsResetting(true);
