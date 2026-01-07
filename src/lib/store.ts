@@ -11,6 +11,7 @@ export type ExecutionStatus = 'created' | 'submitted' | 'processing' | 'confirme
 export interface Client {
   id: ClientId;
   name: string;
+  avatar?: string;
   segment: string;
   base: string;
   netWorth: string;
@@ -106,6 +107,7 @@ const clientA: Client = {
 const clientB: Client = {
   id: 'client-b',
   name: 'Mehta Family Office',
+  avatar: '/male.jpg',
   segment: 'UHNI Family (multi-generational)',
   base: 'India + Singapore exposure',
   netWorth: 'USD 35.0M',

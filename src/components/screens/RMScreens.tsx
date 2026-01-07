@@ -32,6 +32,8 @@ import {
   Activity
 } from 'lucide-react';
 
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -73,6 +75,25 @@ const cardHover = {
 export function RMDashboardScreen() {
   const { clients, blueprints, setCurrentScreen, setSelectedClient } = useAppStore();
 
+  // Example: you can swap these values to test male/female avatars
+  // Example: toggle gender to test
+  // Toggle gender to test different avatars
+  const user = {
+    name: 'Arjun Mehta',
+    gender: 'male',
+    initials: 'AM',
+    title: 'HNI Founder',
+  };
+  // Set avatar image for Arjun Mehta (male)
+  user.avatar = '/male.jpg';
+  // For demo: if you want to test male, uncomment below
+  // const user = {
+  //   name: 'Arjun Mehta',
+  //   gender: 'male',
+  //   avatar: '/public/arjun-mehta.png',
+  //   initials: 'AM',
+  // };
+
   return (
     <motion.div
       variants={containerVariants}
@@ -86,20 +107,24 @@ export function RMDashboardScreen() {
           <div className="absolute inset-0 bg-gradient-to-r from-gold/10 via-transparent to-gold/5 animate-gradient-x" />
           <div className="relative flex items-center gap-8">
             <motion.div
-              className="h-20 w-20 rounded-3xl bg-gradient-to-br from-gold via-gold-light to-gold-muted flex items-center justify-center shadow-xl border-2 border-gold/30"
+              className="relative"
               whileHover={{ scale: 1.08, rotate: 8 }}
               transition={{ duration: 0.3 }}
             >
-              <span className="text-navy font-serif text-2xl font-bold">RK</span>
+              <div className="absolute inset-0 rounded-full border-2 border-gold/30 pointer-events-none" />
+              <Avatar className="h-20 w-20 rounded-3xl shadow-xl overflow-hidden">
+                <AvatarImage src="/male.jpg" alt={user.name} className="aspect-square h-full w-full" />
+              </Avatar>
             </motion.div>
             <div>
               <motion.h2
-                className="font-serif text-4xl font-extrabold text-gold drop-shadow mb-2 tracking-tight"
+                className="font-serif text-4xl font-extrabold text-gold drop-shadow mb-2 tracking-tight flex items-center gap-4"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
               >
-                Welcome back, Riya Kapoor
+                {/* Avatar removed to prevent duplicate before name */}
+                {user.name}
               </motion.h2>
               <motion.p
                 className="text-gold-muted text-lg flex items-center gap-2 font-medium"
@@ -107,8 +132,7 @@ export function RMDashboardScreen() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
               >
-                <Users className="h-4 w-4" />
-                Relationship Manager
+                {user.title}
               </motion.p>
             </div>
             <motion.div
@@ -190,11 +214,17 @@ export function RMDashboardScreen() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <motion.div
-                        className="h-12 w-12 rounded-2xl bg-gradient-to-br from-navy to-navy-light flex items-center justify-center shadow-lg"
+                        className="h-12 w-12 rounded-2xl shadow-lg overflow-hidden"
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <span className="text-gold font-bold">{client.name.charAt(0)}</span>
+                        <Avatar className="h-12 w-12 rounded-2xl">
+                          <AvatarImage
+                            src={client.name === 'Arjun Mehta' ? '/male.jpg' : client.avatar || (client.gender === 'male' ? '/male.jpg' : '/image.png')}
+                            alt={client.name}
+                            className="aspect-square h-full w-full"
+                          />
+                        </Avatar>
                       </motion.div>
                       <div>
                         <div className="flex items-center gap-3 mb-2">
@@ -379,11 +409,17 @@ export function Client360Screen() {
         <div className="relative">
           <div className="flex items-center gap-6 mb-8">
             <motion.div
-              className="h-20 w-20 rounded-3xl bg-gradient-to-br from-gold via-gold-light to-gold-muted flex items-center justify-center shadow-xl"
+              className="h-20 w-20 rounded-3xl shadow-xl overflow-hidden"
               whileHover={{ scale: 1.05, rotate: 5 }}
               transition={{ duration: 0.3 }}
             >
-              <span className="text-navy font-serif text-2xl font-bold">{client.name.charAt(0)}</span>
+              <Avatar className="h-20 w-20 rounded-3xl">
+                <AvatarImage
+                  src={client.name === 'Arjun Mehta' ? '/male.jpg' : client.avatar || (client.gender === 'male' ? '/male.jpg' : '/image.png')}
+                  alt={client.name}
+                  className="aspect-square h-full w-full"
+                />
+              </Avatar>
             </motion.div>
             <div>
               <motion.h2

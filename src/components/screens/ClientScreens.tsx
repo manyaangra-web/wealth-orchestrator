@@ -97,17 +97,31 @@ const AnimatedProfilePhoto = ({ name, size = 'lg' }: { name: string, size?: 'sm'
           />
         ))}
       </div>
-      
+
       {/* Rotating border */}
       <motion.div
         className="absolute inset-0 rounded-full border-2 border-gold/30"
         animate={{ rotate: 360 }}
         transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
       />
-      
-      {/* Initial letter */}
-      <span className="font-serif font-bold text-gold relative z-10">{initial}</span>
-      
+
+      {/* Avatar image for Riya Kapoor, Mehta Family Office, Arjun Mehta; else initial */}
+      {(name === 'Riya Kapoor') ? (
+        <img
+          src="/image.png"
+          alt="Riya Kapoor"
+          className="aspect-square h-full w-full object-cover relative z-10"
+        />
+      ) : (name === 'Mehta Family Office' || name === 'Arjun Mehta') ? (
+        <img
+          src="/male.jpg"
+          alt={name}
+          className="aspect-square h-full w-full object-cover relative z-10"
+        />
+      ) : (
+        <span className="font-serif font-bold text-gold relative z-10">{initial}</span>
+      )}
+
       {/* Hover sparkle */}
       <motion.div
         className="absolute top-1 right-1 opacity-0"
