@@ -318,7 +318,6 @@ export function RMDashboardScreen() {
             <p className="text-sm font-medium">{action.label}</p>
           </motion.button>
         ))}
-
       </motion.div>
 
 
@@ -443,12 +442,12 @@ export function Client360Screen() {
           <motion.button
             key={tab}
             onClick={() => setActiveTab(tab.toLowerCase())}
-            className={`px-6 py-3 text-sm font-medium rounded-xl transition-all duration-300 ${activeTab === tab.toLowerCase()
-                ? 'bg-card text-navy shadow-lg scale-105'
-                : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
+            className={`px-6 py-3 text-sm font-medium rounded-xl transition-all duration-300 cursor-pointer ${activeTab === tab.toLowerCase()
+                ? 'bg-gold text-navy shadow-lg scale-105 font-bold'
+                : 'text-muted-foreground hover:text-gold hover:bg-card/30'
               }`}
-            whileHover={{ scale: activeTab === tab.toLowerCase() ? 1.05 : 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: activeTab === tab.toLowerCase() ? 1.05 : 1.08 }}
+            whileTap={{ scale: 0.96 }}
           >
             {tab}
           </motion.button>
@@ -855,11 +854,10 @@ export function FACollaborationScreen() {
         </motion.div>
       </motion.div>
       </>
-      );
+    );
 }
 
-
-      export function RecommendationsPipelineScreen() {
+export function RecommendationsPipelineScreen() {
   const {selectedClient, getClientRecommendations, updateRecommendationStatus} = useAppStore();
       const recommendations = getClientRecommendations(selectedClient);
 
